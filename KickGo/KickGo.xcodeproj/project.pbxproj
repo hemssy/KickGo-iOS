@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FBB1CDF12E9CDF7F007B41DE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FBB1CDF02E9CDF7F007B41DE /* SnapKit */; };
+		FBB1CE432E9D12B4007B41DE /* NMapsMap in Frameworks */ = {isa = PBXBuildFile; productRef = FBB1CE422E9D12B4007B41DE /* NMapsMap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBB1CDF12E9CDF7F007B41DE /* SnapKit in Frameworks */,
+				FBB1CE432E9D12B4007B41DE /* NMapsMap in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +86,7 @@
 			name = KickGo;
 			packageProductDependencies = (
 				FBB1CDF02E9CDF7F007B41DE /* SnapKit */,
+				FBB1CE422E9D12B4007B41DE /* NMapsMap */,
 			);
 			productName = KickGo;
 			productReference = FBB1CDD72E9CDEAB007B41DE /* KickGo.app */;
@@ -115,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				FBB1CDEF2E9CDF7F007B41DE /* XCRemoteSwiftPackageReference "SnapKit" */,
+				FBB1CE412E9D12B4007B41DE /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FBB1CDD82E9CDEAB007B41DE /* Products */;
@@ -362,6 +366,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		FBB1CE412E9D12B4007B41DE /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/navermaps/SPM-NMapsMap.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.23.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -369,6 +381,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FBB1CDEF2E9CDF7F007B41DE /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		FBB1CE422E9D12B4007B41DE /* NMapsMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FBB1CE412E9D12B4007B41DE /* XCRemoteSwiftPackageReference "SPM-NMapsMap" */;
+			productName = NMapsMap;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
