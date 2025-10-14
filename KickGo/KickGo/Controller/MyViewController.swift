@@ -1,12 +1,12 @@
 import UIKit
 import SnapKit
 
-// 행(아이콘 + 타이틀 + >)
+// 재사용할 수 있게 메뉴행뷰 클래스를 만듦
 class MenuRowView: UIControl {
     private let iconBg = UIView()
     private let iconView = UIImageView()
     private let titleLabel = UILabel()
-    private let chevron = UIImageView(image: UIImage(systemName: "chevron.right"))
+    private let chevron = UIImageView(image: UIImage(systemName: "chevron.right")) //chevron이 꺽쇠임
 
     init(iconSystemName: String, title: String) {
         super.init(frame: .zero)
@@ -49,23 +49,32 @@ class MenuRowView: UIControl {
 
 class MyViewController: UIViewController {
 
+    // 스크롤
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+
+    // 헤더
     private let headerStack = UIStackView()
     private let avatar = UIImageView()
     private let nameLabel = UILabel()
     private let emailLabel = UILabel()
 
-    // 프로필 헤더 밑에 영역(배경 #F3F4F6)
+    // 프로필 헤더 밑의 회색 묶음 영역
     private let contentContainer = UIView()
 
+    // 상태 카드
     private let statusCard = UIView()
     private let statusLabel = UILabel()
 
+    // 메뉴 카드
     private let menuCard = UIView()
     private let historyRow = MenuRowView(iconSystemName: "clock.arrow.circlepath", title: "이용 내역")
     private let myScooterRow = MenuRowView(iconSystemName: "bicycle", title: "내가 등록한 킥보드")
     private let divider = UIView()
 
+    // 버튼들
     private let logoutButton = UIButton(type: .system)
+    private let deleteAccountButton = UIButton(type: .system)
 
     private var isRidingNow: Bool = false
 
@@ -73,6 +82,7 @@ class MyViewController: UIViewController {
         super.viewDidLoad()
         title = "마이페이지"
 
+        setupScroll()
         setupHeader()
         setupContentContainer()
         updateStatus()
@@ -80,9 +90,23 @@ class MyViewController: UIViewController {
         historyRow.addTarget(self, action: #selector(openHistory), for: .touchUpInside)
         myScooterRow.addTarget(self, action: #selector(openMyScooters), for: .touchUpInside)
         logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
+        deleteAccountButton.addTarget(self, action: #selector(deleteAccountTapped), for: .touchUpInside)
     }
 
-    // 프로필헤더
+    private func setupScroll() {
+        view.addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalTo(scrollView.snp.width) // 세로 스크롤만
+        }
+    }
+
+    // 프로필 헤더
     private func setupHeader() {
         headerStack.axis = .horizontal
         headerStack.alignment = .center
@@ -107,34 +131,35 @@ class MyViewController: UIViewController {
         headerStack.addArrangedSubview(avatar)
         headerStack.addArrangedSubview(v)
 
-        view.addSubview(headerStack)
+        contentView.addSubview(headerStack)
         headerStack.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(25)
+            make.top.equalToSuperview().offset(25)
             make.leading.trailing.equalToSuperview().inset(20)
         }
     }
 
     // 묶음영역
     private func setupContentContainer() {
-        
-        contentContainer.backgroundColor = UIColor(red: 0.953, green: 0.957, blue: 0.965, alpha: 1) // #F3F4F6
+        contentContainer.backgroundColor = UIColor(red: 0.953, green: 0.957, blue: 0.965, alpha: 1) // #F3F4F6 색깔
         contentContainer.layer.cornerRadius = 16
 
-        view.addSubview(contentContainer)
+        contentView.addSubview(contentContainer)
         contentContainer.snp.makeConstraints { make in
             make.top.equalTo(headerStack.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.lessThanOrEqualTo(view.safeAreaLayoutGuide).inset(16)
+            make.bottom.equalToSuperview().inset(16) // 스크롤 콘텐츠의 끝
         }
 
         // 내부 구성요소들 추가
         contentContainer.addSubview(statusCard)
         contentContainer.addSubview(menuCard)
         contentContainer.addSubview(logoutButton)
+        contentContainer.addSubview(deleteAccountButton)
 
         setupStatusCard()
         setupMenuCard()
         setupLogout()
+        setupDeleteAccount()
     }
 
     // 상태카드
@@ -161,7 +186,7 @@ class MyViewController: UIViewController {
         : "현재 이용 중인 킥보드가 없습니다."
     }
 
-    // 메뉴카드 (내 이용내역 / 내가 등록한 킥보드)
+    // 메뉴카드 (이용내역, 내가 등록한 킥보드)
     private func setupMenuCard() {
         menuCard.backgroundColor = .white
         menuCard.layer.cornerRadius = 12
@@ -178,6 +203,7 @@ class MyViewController: UIViewController {
             make.top.leading.trailing.equalToSuperview()
         }
 
+        divider.backgroundColor = UIColor(white: 0.85, alpha: 1)
         divider.snp.makeConstraints { make in
             make.top.equalTo(historyRow.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(16)
@@ -202,6 +228,22 @@ class MyViewController: UIViewController {
             make.top.equalTo(menuCard.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(52)
+            // bottom 제약 없음 (마지막 버튼이 맡음)
+        }
+    }
+    
+    // 회원탈퇴 버튼
+    private func setupDeleteAccount() {
+        deleteAccountButton.backgroundColor = .white
+        deleteAccountButton.setTitle("회원탈퇴", for: .normal)
+        deleteAccountButton.setTitleColor(.systemGray, for: .normal)
+        deleteAccountButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        deleteAccountButton.layer.cornerRadius = 12
+
+        deleteAccountButton.snp.makeConstraints { make in
+            make.top.equalTo(logoutButton.snp.bottom).offset(12)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(52)
             make.bottom.equalToSuperview().inset(16)
         }
     }
@@ -222,7 +264,40 @@ class MyViewController: UIViewController {
     }
 
     @objc private func logoutTapped() {
-        print("로그아웃 탭")
+        let alert = UIAlertController(
+            title: "로그아웃 하시겠습니까?",
+            message: nil,
+            preferredStyle: .alert
+        )
+
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let logout = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
+            // 여기에 실제 로그아웃 로직이 나중에 들어갈 예정..
+            print("로그아웃 완료")
+        }
+
+        alert.addAction(cancel)
+        alert.addAction(logout)
+
+        present(alert, animated: true)
+    }
+
+    @objc private func deleteAccountTapped() {
+        let alert = UIAlertController(
+            title: "회원 탈퇴 하시겠습니까?",
+            message: "탈퇴 후에는 모든 데이터가 삭제됩니다.",
+            preferredStyle: .alert
+        )
+
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let delete = UIAlertAction(title: "탈퇴하기", style: .destructive) { _ in
+            // 여기에 실제 탈퇴 처리 로직이 나중에 들어갈 예정..
+            print("회원탈퇴 완료")
+        }
+
+        alert.addAction(cancel)
+        alert.addAction(delete)
+        present(alert, animated: true)
     }
 }
 
