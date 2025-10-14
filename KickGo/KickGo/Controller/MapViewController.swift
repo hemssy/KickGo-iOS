@@ -32,7 +32,7 @@ class MapViewController: UIViewController {
         // 검색창 UI
         searchTextField.placeholder = "어디로 갈까요?"
         searchTextField.tintColor = .gray
-        searchTextField.backgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1)
+        searchTextField.backgroundColor = UIColor(red: 249/255, green: 250/255, blue: 251/255, alpha: 1)
         searchTextField.layer.cornerRadius = 10
         searchTextField.leftView = iconContainer
         searchTextField.leftViewMode = .always
