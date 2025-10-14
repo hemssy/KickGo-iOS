@@ -82,6 +82,3 @@ class RegisterViewController: UIViewController {
 
 }
 
-#Preview {
-    RegisterViewController()
-}

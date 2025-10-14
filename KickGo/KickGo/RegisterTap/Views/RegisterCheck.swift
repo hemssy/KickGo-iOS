@@ -217,6 +217,3 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         infoTableView.rowHeight = 60
     }
 }
-#Preview{
-    RegisterCheck()
-}
