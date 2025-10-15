@@ -55,12 +55,17 @@ final class MapViewController: UIViewController {
         let latLng = NMGLatLng(lat: lat, lng: lng)
         let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
         cameraUpdate.animation = .fly
-        cameraUpdate.animationDuration = 1.2
+        cameraUpdate.animationDuration = 1.0
         mapMainView.mapView.moveCamera(cameraUpdate)
 
         // 마커 표시
         let marker = NMFMarker(position: latLng)
         marker.iconImage = NMF_MARKER_IMAGE_RED
+        if let sym = UIImage(systemName: "mappin.and.ellipse") {
+            marker.iconImage = NMFOverlayImage(image: sym)
+        } else {
+            marker.iconImage = NMF_MARKER_IMAGE_BLACK
+        }
         marker.mapView = mapMainView.mapView
     }
 
