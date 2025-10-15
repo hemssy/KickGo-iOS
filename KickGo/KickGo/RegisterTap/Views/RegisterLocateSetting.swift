@@ -5,6 +5,19 @@ import SnapKit
 
 
 class RegisterLocateSettingView: UIView {
+    // 스크롤 뷰
+    let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.backgroundColor = .clear
+        return scrollView
+    }()
+    // 컨텐츠 뷰
+    let contentView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
     //상단 숫자
     let numsLabel: UILabel = {
         let label = UILabel()
@@ -117,8 +130,11 @@ class RegisterLocateSettingView: UIView {
     }
 
     func configureUI() {
+        self.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
         [numsLabel, infoLabel, detailLabel, searchContainerView, bottomContainerView, mapView].forEach {
-            self.addSubview($0)
+            contentView.addSubview($0)
         }
         [prevButton, nextButton].forEach {
             bottomContainerView.addSubview($0)
@@ -129,8 +145,15 @@ class RegisterLocateSettingView: UIView {
     }
 
     func setupLayout() {
+        scrollView.snp.makeConstraints{
+            $0.edges.equalTo(self.safeAreaLayoutGuide)
+        }
+        contentView.snp.makeConstraints{
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+        }
         numsLabel.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(30)
+            $0.top.equalToSuperview().inset(30)
             $0.width.height.equalTo(32)
             $0.centerX.equalToSuperview()
         }
@@ -144,17 +167,17 @@ class RegisterLocateSettingView: UIView {
         }
         searchContainerView.snp.makeConstraints {
             $0.top.equalTo(detailLabel.snp.bottom).offset(20)
-            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
         }
         mapView.snp.makeConstraints {
             $0.top.equalTo(searchContainerView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalTo(bottomContainerView.snp.top)
+            $0.height.equalTo(300)
         }
         bottomContainerView.snp.makeConstraints {
+            $0.top.equalTo(mapView.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(self.safeAreaLayoutGuide)
-            $0.top.equalTo(prevButton.snp.top).offset(-16)
+            $0.bottom.equalToSuperview()
         }
         searchContainerSetUpLayout()
         bottomContainerSetUpLayout()
@@ -180,8 +203,9 @@ class RegisterLocateSettingView: UIView {
 
     func bottomContainerSetUpLayout() {
         prevButton.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(16)
+            $0.bottom.equalToSuperview().inset(16)
             $0.height.equalTo(50)
-            $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().inset(20)
             $0.trailing.equalTo(nextButton.snp.leading).offset(-20)
         }
@@ -272,4 +296,3 @@ class RegisterLocateSettingView: UIView {
 
 
 }
-
