@@ -18,7 +18,11 @@ class MyRegisterListViewController: UIViewController, UITableViewDataSource {
     private func setupTableView() {
         view.addSubview(tableView)
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        
+        // 여기 커스텀한 셀 등록으로 변경함
+        tableView.register(ScooterCell.self, forCellReuseIdentifier: "ScooterCell")
+        
+        
         tableView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
@@ -41,12 +45,20 @@ class MyRegisterListViewController: UIViewController, UITableViewDataSource {
         return scooters.count
     }
     
-    // 나중에 수정+삭제 UI를 간소화하기 위해서 테이블뷰형태로 만들었습니다!
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+        // 커스텀 셀로 교체
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScooterCell", for: indexPath) as? ScooterCell else {
+            return UITableViewCell()
+        }
+
         let s = scooters[indexPath.row]
-        cell.textLabel?.text = "\(s.modelName ?? "모델 입력X") - \(s.serialNumber ?? "") (\(s.battery)% )"
-        cell.detailTextLabel?.text = s.position // 위치는 밑에 작은 글씨로 표시해줌
+        cell.configure(
+            modelName: s.modelName,
+            serial: s.serialNumber,
+            battery: Int(s.battery),
+            position: s.position
+        )
+
         return cell
     }
 }
