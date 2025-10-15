@@ -78,6 +78,7 @@ class RegisterViewController: UIViewController {
             registerLocationSettingView.isHidden = false
             registerCheck.isHidden = true
         }
+        
     }
     
     // 킥보드 정보 저장 메서드
