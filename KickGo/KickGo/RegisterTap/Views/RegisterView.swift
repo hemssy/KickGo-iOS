@@ -82,21 +82,11 @@ class RegisterView: UIView {
         return textField
     }()
     
-    //하단 취소, 다음 컨테이너뷰
+    //다음 컨테이너뷰
     let bottomContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         return view
-    }()
-    
-    let cancelButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("취소", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = ColorF3F4F6
-        button.layer.cornerRadius = 12
-        return button
     }()
     
     let nextButton: UIButton = {
@@ -130,7 +120,7 @@ class RegisterView: UIView {
             registerContainerView.addSubview($0)
         }
         //bottomContainerView에 상속
-        [cancelButton,nextButton].forEach{
+        [nextButton].forEach{
             bottomContainerView.addSubview($0)
         }
         
@@ -156,7 +146,7 @@ class RegisterView: UIView {
         bottomContainerView.snp.makeConstraints{
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(self.safeAreaLayoutGuide)
-            $0.top.equalTo(cancelButton.snp.top).offset(-16)
+            $0.top.equalTo(nextButton.snp.top).offset(-16)
         }
         
         registerSetUpLayout()
@@ -204,18 +194,14 @@ class RegisterView: UIView {
     
     //bottomContainerView 하위 요소 오토레이아웃 설정
     func bottomContainerSetUpLayout() {
-        // 취소 버튼
-        cancelButton.snp.makeConstraints {
-            $0.height.equalTo(50)
-            $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(20)
-        }
+
         // 다음 버튼
         nextButton.snp.makeConstraints {
-            $0.width.equalTo(cancelButton)
-            $0.centerY.height.equalTo(cancelButton)
+            $0.height.equalTo(60)
+            $0.centerY.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(20)
             $0.trailing.equalToSuperview().inset(20)
-            $0.leading.equalTo(cancelButton.snp.trailing).offset(20)
+            
             
         }
     }
@@ -229,10 +215,10 @@ class RegisterView: UIView {
 
         // 초기에는 비활성화 상태
         nextButton.isEnabled = false
-        nextButton.backgroundColor = UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1)
+        nextButton.backgroundColor = ColorE5E7EB
     }
 
-    @objc private func textFieldsChanged() {
+    @objc func textFieldsChanged() {
         // 세 칸 모두 입력되어야 활성화
         let filled = !(modelNameTextField.text?.isEmpty ?? true) &&
                      !(serialNumberTextField.text?.isEmpty ?? true) &&
@@ -243,11 +229,11 @@ class RegisterView: UIView {
         
         if filled {
             // 활성화 상태(정보를 다 입력했을 때)
-            nextButton.backgroundColor = UIColor(red: 0.145, green: 0.388, blue: 0.922, alpha: 1) // 피그마 #2563EB 색깔
+            nextButton.backgroundColor = Color2563EB
             nextButton.setTitleColor(.white, for: .normal)
         } else {
             // 비활성화 상태(정보 하나라도 누락됐을 때)
-            nextButton.backgroundColor = UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1) // 피그마 #E5E7EB 색깔
+            nextButton.backgroundColor = ColorE5E7EB
             nextButton.setTitleColor(.darkGray, for: .normal)
         }
         

@@ -3,6 +3,10 @@ import Foundation
 import UIKit
 import SnapKit
 
+protocol RegisterCheckDelegate: AnyObject {
+    func registerCheckDidTapNext() -> [(title: String, value: String)]
+}
+
 class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return infoDummyData.count
@@ -12,19 +16,14 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: RegisterCheckCell.identifier, for: indexPath) as? RegisterCheckCell else {
             return UITableViewCell()
         }
+        cell.selectionStyle = .none
         let item = infoDummyData[indexPath.row]
         cell.configure(title: item.title, value: item.value)
         return cell
     }
     
-    
-    //[이후 교체] 테이블 뷰 더미 데이터
-    let infoDummyData: [(title: String, value: String)] = [
-        ("모델명", "KickGo Pro Max"),
-        ("시리얼 번호", "KR-12345-ABC"),
-        ("배터리", "87%"),
-        ("배치 위치", "서울시 강남구")
-    ]
+    weak var delegate: RegisterCheckDelegate?
+    var infoDummyData: [(title: String, value: String)] = []
     
     //상단 숫자
     let numsLabel: UILabel = {
@@ -215,5 +214,10 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         infoTableView.delegate = self
         infoTableView.dataSource = self
         infoTableView.rowHeight = 60
+    }
+    
+    func reloadData(){
+        self.infoDummyData = delegate?.registerCheckDidTapNext() ?? []
+        self.infoTableView.reloadData()
     }
 }

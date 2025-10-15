@@ -221,7 +221,7 @@ class RegisterLocateSettingView: UIView {
     private func setupTargets() {
         searchTextField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         nextButton.isEnabled = false
-        nextButton.backgroundColor = UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1)
+        nextButton.backgroundColor = ColorE5E7EB
         nextButton.setTitleColor(.darkGray, for: .normal)
     }
 
@@ -230,7 +230,7 @@ class RegisterLocateSettingView: UIView {
         nextButton.isEnabled = hasText
         nextButton.backgroundColor = hasText
             ? UIColor(red: 0.145, green: 0.388, blue: 0.922, alpha: 1)
-            : UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1)
+            : ColorE5E7EB
         nextButton.setTitleColor(hasText ? .white : .darkGray, for: .normal)
     }
 
@@ -251,6 +251,7 @@ class RegisterLocateSettingView: UIView {
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        // 나중에 키값 보안을 위한 리팩토링 진행해야함
         request.addValue("oj5l1oliar", forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
         request.addValue("wndlYwoXCHG0cV6r465Jy502IN1rQZV2hslxhwMm", forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
