@@ -220,6 +220,9 @@ class RegisterLocateSettingView: UIView {
         geocode(query: query)
     }
 
+    // MapViewController에게 좌표 전달을 위한 콜백
+    var onCoordinateFound: ((Double, Double) -> Void)?
+    
     // Geocoding API 호출 및 지도 이동
     func geocode(query: String) {
         guard let encodeQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
@@ -242,6 +245,11 @@ class RegisterLocateSettingView: UIView {
 
             DispatchQueue.main.async {
                 self.updateMap(lat: lat, lng: lng)
+            }
+            
+            // MapViewController로 보내기 위한
+            DispatchQueue.main.async {
+                self.onCoordinateFound?(lat, lng)
             }
         }.resume()
     }

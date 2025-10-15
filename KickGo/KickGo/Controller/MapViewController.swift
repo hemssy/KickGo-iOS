@@ -17,6 +17,7 @@ final class MapViewController: UIViewController {
         
         setupSearchAction()
         setupMarkers()
+        onCoordinateFound() 
     }
 
     private func setupSearchAction() {
@@ -48,6 +49,26 @@ final class MapViewController: UIViewController {
         guard let query = mapMainView.mapSearchTextField.text, !query.isEmpty else { return }
         print("mapLocationSearch query:", query)
         mapSearchManager.geocode(query: query)
+    }
+    
+    private func moveCamera(lat: Double, lng: Double) {
+        let latLng = NMGLatLng(lat: lat, lng: lng)
+        let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
+        cameraUpdate.animation = .fly
+        cameraUpdate.animationDuration = 1.2
+        mapMainView.mapView.moveCamera(cameraUpdate)
+
+        // 마커 표시
+        let marker = NMFMarker(position: latLng)
+        marker.iconImage = NMF_MARKER_IMAGE_RED
+        marker.mapView = mapMainView.mapView
+    }
+
+    func onCoordinateFound() {
+        // RegisterLocateSettingView가 좌표를 찾으면 moveCamera 실행
+        mapSearchManager.onCoordinateFound = { [weak self] lat, lng in
+            self?.moveCamera(lat: lat, lng: lng)
+        }
     }
 
 }
