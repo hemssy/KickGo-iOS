@@ -14,7 +14,9 @@ class RegisterLocateSettingView: UIView{
         label.textAlignment = .center
         label.layer.cornerRadius = 16
         label.layer.masksToBounds = true
+        
         return label
+        
     }()
     // 위치 설정 label
     let infoLabel: UILabel = {
@@ -92,15 +94,19 @@ class RegisterLocateSettingView: UIView{
     // 서치한 위치의 지도 나타내는 uiView
     let mapView: NMFMapView = {
         let view = NMFMapView()
-        view.backgroundColor = .white
+        view.moveCamera(NMFCameraUpdate(scrollTo: NMGLatLng(lat: 37.5665, lng: 126.9780)))
         return view
     }()
+    // 지도에 표시할 마커
+    let marker = NMFMarker()
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureUI()
         setupLayout()
+        
+        searchButton.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -168,7 +174,7 @@ class RegisterLocateSettingView: UIView{
             $0.top.equalTo(searchLabel.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(60)
-    
+            
         }
         
         searchButton.snp.makeConstraints{
@@ -198,5 +204,94 @@ class RegisterLocateSettingView: UIView{
         }
     }
     
+    //검색 버튼
+    @objc func searchButtonTapped() {
+        //
+        guard let query = searchTextField.text, !query.isEmpty else {
+            print("검색어를 입력해주세요.")
+            return
+        }
+        geocode(query: query)
+    }
+    
+    // Geocoding API 호출
+    func geocode(query: String){
+        //한글이 있는 url string을 percent encdoing으로 string 변경
+        guard let encodeQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+        
+        let urlString = "https://maps.apigw.ntruss.com/map-geocode/v2/geocode?query=\(encodeQuery)"
+        
+        guard let url = URL(string: urlString) else {
+            print("URL 생성 실패")
+            return
+        }
+        
+        // URLRequest 생성
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        // 키 값 및 헤더 설정
+        request.addValue("oj5l1oliar", forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.addValue("wndlYwoXCHG0cV6r465Jy502IN1rQZV2hslxhwMm", forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("iOSApp", forHTTPHeaderField: "User-Agent")
+        // 요청값 디버깅
+        print("Method")
+        print(request.httpMethod ?? "Method nil")
+        print("URL")
+        print(request.url?.absoluteString ?? "URL nil 처리")
+        print("Headers")
+        print("현재 번들 ID: \(Bundle.main.bundleIdentifier ?? "nil")")
 
+        if let headers = request.allHTTPHeaderFields {
+            for (key, value) in headers {
+                print("\(key): \(value)")
+            }
+        } else {
+            print("헤더가 nil")
+        }
+        
+        //API 호출
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("데이터 오류")
+                return
+            }
+            
+            do {
+                let response = try JSONDecoder().decode(GeocodingResponse.self, from: data)
+                
+                if let firstAddress = response.addresses.first,
+                   let lat = Double(firstAddress.y),
+                   let lng = Double(firstAddress.x){
+                    
+                    DispatchQueue.main.async {
+                        self.updateMap(lat: lat, lng: lng)
+                    }
+                } else{
+                    print("검색 결과 에러")
+                }
+            } catch {
+                print("디코딩 에러")
+                if let dataAsString = String(data: data, encoding: .utf8) {
+                    print("원본 데이터: \(dataAsString)")
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func updateMap(lat: Double, lng: Double){
+        let markerManager = MapMarkerManager()
+        let latLng = NMGLatLng(lat: lat, lng: lng)
+        
+        let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
+        cameraUpdate.animation = .fly
+        cameraUpdate.animationDuration = 1.0
+        mapView.moveCamera(cameraUpdate)
+        
+        marker.iconImage = NMFOverlayImage(image: markerManager.makeMarkerImage(color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1)))
+        
+        marker.position = latLng
+        marker.mapView = self.mapView
+    }
 }
