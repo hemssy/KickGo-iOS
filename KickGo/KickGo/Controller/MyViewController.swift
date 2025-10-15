@@ -270,7 +270,17 @@ class MyViewController: UIViewController {
 
         let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         let logout = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
-            // 여기에 실제 로그아웃 로직이 나중에 들어갈 예정..
+            // 로그인 화면으로 이동
+            let loginVC = LoginViewController()
+            let nav = UINavigationController(rootViewController: loginVC)
+            nav.modalPresentationStyle = .fullScreen
+            
+            // 현재 윈도우의 루트뷰컨트롤러 교체
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+               let window = sceneDelegate.window {
+                window.rootViewController = nav
+                window.makeKeyAndVisible()
+            }
             print("로그아웃 완료")
         }
 
