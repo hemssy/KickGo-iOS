@@ -40,12 +40,22 @@ class MapViewController: UIViewController {
         
         // 지도에 빨간색 마커 추가
         markerManager.addMarker(to: mapView, lat: 37.3497, lng: 127.1171, color: UIColor(red: 239/255, green: 68/255, blue: 68/255, alpha: 1))
+        { [weak self] in
+                    self?.presentMarkerSheet()
+        }
+                
         
         // 지도에 초록색 마커 추가
         markerManager.addMarker(to: mapView, lat: 37.3595704, lng: 127.105399, color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1))
+        { [weak self] in
+                    self?.presentMarkerSheet()
+        }
         
         // 지도에 회색 마커 추가
         markerManager.addMarker(to: mapView, lat: 37.3500, lng: 127.10899, color: UIColor(red: 156/255, green: 163/255, blue: 175/255, alpha: 1))
+        { [weak self] in
+                    self?.presentMarkerSheet()
+        }
     }
     
     func setConstraints() {
@@ -66,5 +76,20 @@ class MapViewController: UIViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
         }
 
+    }
+}
+
+// 시트 띄우기
+extension MapViewController {
+    func presentMarkerSheet() {
+        let sheetVC = MarkerSheetViewController()
+        sheetVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = sheetVC.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.preferredCornerRadius = 20
+        }
+        
+        present(sheetVC, animated: true)
     }
 }

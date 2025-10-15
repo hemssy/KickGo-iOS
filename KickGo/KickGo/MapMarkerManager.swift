@@ -2,12 +2,20 @@ import NMapsMap
 
 class MapMarkerManager {
     
-    func addMarker(to mapView: NMFMapView, lat: Double, lng: Double, color: UIColor) {
+    func addMarker( to mapView: NMFMapView, lat: Double, lng: Double, color: UIColor, onTap: (() -> Void)? = nil
+    ) {
         let marker = NMFMarker()
         
         marker.position = NMGLatLng(lat: lat, lng: lng)
         marker.iconImage = NMFOverlayImage(image: makeMarkerImage(color: color))
         marker.mapView = mapView
+        
+        // 마커 눌렀을 때 동작
+        marker.touchHandler = { _ in
+            onTap?()
+            print("tap")
+            return true
+        }
     }
     
     // 마커 이미지 설정
@@ -23,6 +31,7 @@ class MapMarkerManager {
             if let symbol = UIImage(systemName: "motorcycle.fill") {
                 let symbol = symbol.withTintColor(.white, renderingMode: .alwaysOriginal)
                 
+                // 중앙 정렬
                 let symbolX = (size.width - symbol.size.width) / 2
                 let symbolY = (size.height - symbol.size.height) / 2
                 symbol.draw(at: CGPoint(x: symbolX, y: symbolY))
