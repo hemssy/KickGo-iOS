@@ -257,9 +257,7 @@ class MyViewController: UIViewController {
     }
 
     @objc private func openMyScooters() {
-        let vc = UIViewController()
-        vc.title = "내가 등록한 킥보드"
-        vc.view.backgroundColor = .systemBackground
+        let vc = MyRegisterListViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
