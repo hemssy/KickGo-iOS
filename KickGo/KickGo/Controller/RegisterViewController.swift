@@ -79,6 +79,5 @@ class RegisterViewController: UIViewController {
     }
     
     // 완료 알럿 함수 만들기
-
+    
 }
-
