@@ -26,19 +26,19 @@ final class MapViewController: UIViewController {
 
     private func setupMarkers() {
         // 빨간색 마커
-        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3497, lng: 127.1171,
+        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3497, lng: 127.1171,
                                 color: UIColor(red: 239/255, green: 68/255, blue: 68/255, alpha: 1)) { [weak self] in
             self?.presentMarkerSheet()
         }
 
         // 초록색 마커
-        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3595704, lng: 127.105399,
+        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3595704, lng: 127.105399,
                                 color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1)) { [weak self] in
             self?.presentMarkerSheet()
         }
 
         // 회색 마커
-        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3500, lng: 127.10899,
+        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3500, lng: 127.10899,
                                 color: UIColor(red: 156/255, green: 163/255, blue: 175/255, alpha: 1)) { [weak self] in
             self?.presentMarkerSheet()
         }
@@ -56,7 +56,7 @@ final class MapViewController: UIViewController {
         let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
         cameraUpdate.animation = .fly
         cameraUpdate.animationDuration = 1.0
-        mapMainView.mapView.moveCamera(cameraUpdate)
+        mapMainView.mapView.mapView.moveCamera(cameraUpdate)
 
         // 마커 표시
         let marker = NMFMarker(position: latLng)
@@ -66,7 +66,7 @@ final class MapViewController: UIViewController {
         } else {
             marker.iconImage = NMF_MARKER_IMAGE_BLACK
         }
-        marker.mapView = mapMainView.mapView
+        marker.mapView = mapMainView.mapView.mapView
     }
 
     func onCoordinateFound() {

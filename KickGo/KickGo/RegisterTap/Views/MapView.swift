@@ -4,7 +4,7 @@ import NMapsMap
 
 class MapView: UIView {
     
-    let mapView = NMFMapView()
+    let mapView = NMFNaverMapView()
     let marker = NMFMarker()  // 지도 위에 표시되는 현재 위치 마커
     let mapSearchTextField = UITextField()
     let mapSearchImageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
