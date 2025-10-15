@@ -2,13 +2,24 @@ import UIKit
 import SnapKit
 import CoreData
 
-class RegisterViewController: UIViewController {
+class RegisterViewController: UIViewController,RegisterCheckDelegate {
+    func registerCheckDidTapNext() -> [(title: String, value: String)] {
+        return[
+            ("모델명", registerView.modelNameTextField.text ?? ""),
+            ("시리얼 번호", registerView.serialNumberTextField.text ?? ""),
+            ("배터리", registerView.batteryTextField.text ?? ""),
+            ("배치 위치", registerLocationSettingView.searchTextField.text ?? "")
+        ]
+    }
+    
+    
     let registerView = RegisterView()
     let registerLocationSettingView = RegisterLocateSettingView()
     let registerCheck = RegisterCheck()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerCheck.delegate = self
         view.backgroundColor = ColorF3F4F6
         title = "등록"
         configureUI()
@@ -56,14 +67,17 @@ class RegisterViewController: UIViewController {
     
     
     @objc func goNext(){
+        
         if registerView.isHidden == false{
             registerView.isHidden = true
             registerLocationSettingView.isHidden = false
             registerCheck.isHidden = true
+            registerCheck.reloadData()
         } else if registerLocationSettingView.isHidden == false{
             registerView.isHidden = true
             registerLocationSettingView.isHidden = true
             registerCheck.isHidden = false
+            registerCheck.reloadData()
         } else if registerCheck.isHidden == false{
             //완료 알럿 함수 나타내기
         }
@@ -104,16 +118,33 @@ class RegisterViewController: UIViewController {
         do {
             try context.save()
             showAlert(title: "등록 완료", message: "킥보드 정보가 저장되었습니다.")
+            resetRegistrationForm()
         } catch {
             print("저장 실패: \(error)")
+            
         }
     }
 
 
     // 등록완료 알럿
-    func showAlert(title: String, message: String) {
+    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        
+        let completAction = UIAlertAction(title: "확인", style: .default) { (_) in
+            completion?()
+        }
+        alert.addAction(completAction)
         present(alert, animated: true)
     }
+    //등록 화면 데이터 초기화
+    private func resetRegistrationForm() {
+        
+        registerView.modelNameTextField.text = nil
+        registerView.serialNumberTextField.text = nil
+        registerView.batteryTextField.text = nil
+        registerLocationSettingView.searchTextField.text = nil
+        registerView.textFieldsChanged()
+        settingView()
+    }
+    
 }
