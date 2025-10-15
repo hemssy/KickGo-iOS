@@ -76,6 +76,7 @@ class RegisterViewController: UIViewController {
             registerLocationSettingView.isHidden = false
             registerCheck.isHidden = true
         }
+        
     }
     
     // 완료 알럿 함수 만들기
