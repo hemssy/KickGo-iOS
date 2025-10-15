@@ -64,7 +64,10 @@ class MyViewController: UIViewController {
 
     // 상태 카드
     private let statusCard = UIView()
-    private let statusLabel = UILabel()
+    private let scooterImageView = UIImageView()
+    private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
+
 
     // 메뉴 카드
     private let menuCard = UIView()
@@ -76,7 +79,7 @@ class MyViewController: UIViewController {
     private let logoutButton = UIButton(type: .system)
     private let deleteAccountButton = UIButton(type: .system)
 
-    private var isRidingNow: Bool = false
+    private var isRidingNow: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,7 +88,7 @@ class MyViewController: UIViewController {
         setupScroll()
         setupHeader()
         setupContentContainer()
-        updateStatus()
+        updateStatusUI()
 
         historyRow.addTarget(self, action: #selector(openHistory), for: .touchUpInside)
         myScooterRow.addTarget(self, action: #selector(openMyScooters), for: .touchUpInside)
@@ -164,27 +167,98 @@ class MyViewController: UIViewController {
 
     // 상태카드
     private func setupStatusCard() {
+        // 카드 스타일
         statusCard.backgroundColor = .white
-        statusCard.layer.cornerRadius = 12
+        statusCard.layer.cornerRadius = 16
+        statusCard.layer.shadowColor = UIColor.black.cgColor
+        statusCard.layer.shadowOpacity = 0.1
+        statusCard.layer.shadowOffset = CGSize(width: 0, height: 4)
+        statusCard.layer.shadowRadius = 8
 
-        statusLabel.textAlignment = .center
-        statusLabel.numberOfLines = 0
-        statusLabel.font = .systemFont(ofSize: 16)
-        statusCard.addSubview(statusLabel)
-        statusLabel.snp.makeConstraints { $0.edges.equalToSuperview().inset(20) }
+        // 이용 중일 때 쓸 컴포넌트들
+        scooterImageView.contentMode = .scaleAspectFill
+        scooterImageView.clipsToBounds = true
+        scooterImageView.layer.cornerRadius = 12
+        statusCard.addSubview(scooterImageView)
+        scooterImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(70)
+        }
 
+        titleLabel.font = .boldSystemFont(ofSize: 20)
+        titleLabel.textColor = UIColor(red: 0.12, green: 0.15, blue: 0.23, alpha: 1.0)
+
+        subtitleLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        subtitleLabel.textColor = .systemGray
+
+        let labelStack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        labelStack.axis = .vertical
+        labelStack.spacing = 6
+        statusCard.addSubview(labelStack)
+        labelStack.snp.makeConstraints { make in
+            make.leading.equalTo(scooterImageView.snp.trailing).offset(16)
+            make.trailing.equalToSuperview().inset(20)
+            make.centerY.equalToSuperview()
+        }
+
+        // 이용 중 아닐 때 쓸 중앙에 위치하는 문구
+        let centerLabel = UILabel()
+        centerLabel.text = "현재 이용 중인 킥보드가 없습니다."
+        centerLabel.textAlignment = .center
+        centerLabel.textColor = .darkGray
+        centerLabel.font = .systemFont(ofSize: 16)
+        centerLabel.numberOfLines = 0
+        centerLabel.tag = 999 // 나중에 업데이트할 때 찾으려고 태그 만들어둠
+        statusCard.addSubview(centerLabel)
+        centerLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+
+        // 카드 위치
+        contentContainer.addSubview(statusCard)
         statusCard.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(32)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(250)
+            make.height.equalTo(150)
+        }
+
+        updateStatusUI()
+    }
+
+    
+    // 상태카드 업데이트 메서드
+    private func updateStatusUI() {
+        let centerLabel = statusCard.viewWithTag(999) as? UILabel
+
+        if isRidingNow {
+            // 이용 중
+            scooterImageView.isHidden = false
+            titleLabel.isHidden = false
+            subtitleLabel.isHidden = false
+            centerLabel?.isHidden = true
+
+            scooterImageView.image = UIImage(named: "isRidingTrueIcon")
+            titleLabel.text = "현재 킥보드 이용중입니다."
+            subtitleLabel.text = "안전한 라이딩 부탁드립니다!"
+            titleLabel.textColor = UIColor(red: 0.12, green: 0.15, blue: 0.23, alpha: 1.0)
+            subtitleLabel.textColor = .systemGray
+            statusCard.backgroundColor = .white
+
+        } else {
+            // 이용 중 아님
+            scooterImageView.isHidden = true
+            titleLabel.isHidden = true
+            subtitleLabel.isHidden = true
+            centerLabel?.isHidden = false
+
+            statusCard.backgroundColor = UIColor(white: 0.95, alpha: 1)
         }
     }
 
-    private func updateStatus() {
-        statusLabel.text = isRidingNow
-        ? "현재 이용 중인 킥보드가 있습니다."
-        : "현재 이용 중인 킥보드가 없습니다."
-    }
+
+    
 
     // 메뉴카드 (이용내역, 내가 등록한 킥보드)
     private func setupMenuCard() {
