@@ -29,7 +29,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
     //상단 숫자
     let numsLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = viewNumsColor
+        label.backgroundColor = Color2563EB
         label.textColor = .white
         label.text = "3"
         label.textAlignment = .center
@@ -63,7 +63,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         button.setTitle("이전", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = Color10B981
         button.layer.cornerRadius = 12
         return button
     }()
@@ -73,7 +73,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         button.setTitle("등록완료", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = Color10B981
         button.layer.cornerRadius = 12
         return button
     }()
@@ -92,7 +92,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
     //등록 완료 준비 컨테이너 뷰
     let checkInfoContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = greenAlertColor
+        view.backgroundColor = ColorECFDF5
         view.layer.cornerRadius = 12
         return view
     }()
@@ -102,7 +102,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         let label = UILabel()
         label.text = "등록 완료 준비"
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textColor = greenTextColor
+        label.textColor = Color10B981
         
         return label
     }()
@@ -111,7 +111,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
         let label = UILabel()
         label.text = "위 정보로 킥보드를 등록하시겠습니까? 등록 후에도 위치는 언제든 변경할 수 있습니다."
         label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.textColor = greenTextColor
+        label.textColor = Color10B981
         label.numberOfLines = 0
         return label
     }()

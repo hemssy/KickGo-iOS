@@ -8,7 +8,7 @@ class RegisterView: UIView {
     //상단 숫자
     let numsLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = viewNumsColor
+        label.backgroundColor = Color2563EB
         label.textColor = .white
         label.text = "1"
         label.textAlignment = .center
@@ -46,7 +46,7 @@ class RegisterView: UIView {
     let modelNameTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
-        textField.backgroundColor = bgColor
+        textField.backgroundColor = ColorF3F4F6
         textField.placeholder = "예: KickGo Pro Max"
         textField.autocapitalizationType = .none
         return textField
@@ -61,7 +61,7 @@ class RegisterView: UIView {
     let serialNumberTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
-        textField.backgroundColor = bgColor
+        textField.backgroundColor = ColorF3F4F6
         textField.placeholder = "킥보드에 표시된 시리얼 번호를 입력하세요."
         textField.autocapitalizationType = .none
         return textField
@@ -76,7 +76,7 @@ class RegisterView: UIView {
     let batteryTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
-        textField.backgroundColor = bgColor
+        textField.backgroundColor = ColorF3F4F6
         textField.placeholder = "현재 배터리 잔량을 입력하세요."
         textField.autocapitalizationType = .none
         return textField
@@ -94,7 +94,7 @@ class RegisterView: UIView {
         button.setTitle("취소", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = ColorF3F4F6
         button.layer.cornerRadius = 12
         return button
     }()
@@ -104,7 +104,7 @@ class RegisterView: UIView {
         button.setTitle("다음", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = ColorF3F4F6
         button.layer.cornerRadius = 12
         return button
     }()

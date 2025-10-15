@@ -21,7 +21,7 @@ class RegisterLocateSettingView: UIView {
     //상단 숫자
     let numsLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = viewNumsColor
+        label.backgroundColor = Color2563EB
         label.textColor = .white
         label.text = "2"
         label.textAlignment = .center
@@ -57,7 +57,7 @@ class RegisterLocateSettingView: UIView {
         button.setTitle("이전", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = ColorF3F4F6
         button.layer.cornerRadius = 12
         return button
     }()
@@ -67,7 +67,7 @@ class RegisterLocateSettingView: UIView {
         button.setTitle("다음", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = ColorF3F4F6
         button.layer.cornerRadius = 12
         return button
     }()
@@ -91,7 +91,7 @@ class RegisterLocateSettingView: UIView {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
         textField.autocapitalizationType = .none
-        textField.backgroundColor = bgColor
+        textField.backgroundColor = ColorF3F4F6
         textField.placeholder = "예: 강남역 2번 출구"
         return textField
     }()
@@ -102,7 +102,7 @@ class RegisterLocateSettingView: UIView {
         button.setTitle("확인", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         button.setTitleColor(.darkGray, for: .normal)
-        button.backgroundColor = bgColor
+        button.backgroundColor = ColorF3F4F6
         button.layer.cornerRadius = 12
         return button
     }()

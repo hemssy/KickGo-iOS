@@ -9,7 +9,7 @@ class RegisterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = bgColor
+        view.backgroundColor = ColorF3F4F6
         title = "등록"
         configureUI()
         setupView()
