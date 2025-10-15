@@ -101,6 +101,7 @@ class RegisterLocateSettingView: UIView{
         super.init(frame: frame)
         configureUI()
         setupLayout()
+        setupTargets()
     }
     
     required init?(coder: NSCoder) {
@@ -198,5 +199,28 @@ class RegisterLocateSettingView: UIView{
         }
     }
     
+    // 입력값 감시 및 다음버튼 활성화 제어
+    private func setupTargets() {
+        // 입력 변화 감지
+        searchTextField.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
+
+        // 초기 상태 비활성화
+        nextButton.isEnabled = false
+        nextButton.backgroundColor = UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1) // #E5E7EB
+        nextButton.setTitleColor(.darkGray, for: .normal)
+    }
+
+    @objc private func textFieldChanged() {
+        // 위치 입력 여부 체크
+        let hasText = !(searchTextField.text?.isEmpty ?? true)
+
+        // 버튼 상태 업데이트
+        nextButton.isEnabled = hasText
+        nextButton.backgroundColor = hasText
+            ? UIColor(red: 0.145, green: 0.388, blue: 0.922, alpha: 1) // 파란색 (#2563EB)
+            : UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1) // 회색 (#E5E7EB)
+        nextButton.setTitleColor(hasText ? .white : .darkGray, for: .normal)
+    }
+
 
 }
