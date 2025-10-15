@@ -1,95 +1,88 @@
 import UIKit
-import SnapKit
 import NMapsMap
 
-class MapViewController: UIViewController {
-    
-    let mapView = NMFMapView()
-    let searchTextField = UITextField()
-    let searchImageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
-    // 여백을 위한 UIView
-    let iconContainer = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 24))
-    let markerManager = MapMarkerManager()
-    
+final class MapViewController: UIViewController {
+
+    private let mapMainView = MapView()
+    private let markerManager = MapMarkerManager()
+    private let mapSearchManager = RegisterLocateSettingView() // 지오코딩 담당
+
+    override func loadView() {
+        view = mapMainView
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
         title = "지도"
         
-        configureUI()
-        setConstraints()
+        setupSearchAction()
+        setupMarkers()
+        onCoordinateFound() 
     }
-    
-    func configureUI() {
-        // 돋보기 이미지
-        searchImageView.tintColor = .gray
-        searchImageView.contentMode = .scaleAspectFit
-        
-        // 여백을 위한
-        searchImageView.frame = CGRect(x: 10, y: 0, width: 20, height: 20)
-        iconContainer.addSubview(searchImageView)
-        searchImageView.center.y = iconContainer.center.y
-        
-        // 검색창 UI
-        searchTextField.placeholder = "어디로 갈까요?"
-        searchTextField.tintColor = .gray
-        searchTextField.backgroundColor = UIColor(red: 249/255, green: 250/255, blue: 251/255, alpha: 1)
-        searchTextField.layer.cornerRadius = 10
-        searchTextField.leftView = iconContainer
-        searchTextField.leftViewMode = .always
-        
-        // 지도에 빨간색 마커 추가
-        markerManager.addMarker(to: mapView, lat: 37.3497, lng: 127.1171, color: UIColor(red: 239/255, green: 68/255, blue: 68/255, alpha: 1))
-        { [weak self] in
-                    self?.presentMarkerSheet()
-        }
-                
-        
-        // 지도에 초록색 마커 추가
-        markerManager.addMarker(to: mapView, lat: 37.3595704, lng: 127.105399, color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1))
-        { [weak self] in
-                    self?.presentMarkerSheet()
-        }
-        
-        // 지도에 회색 마커 추가
-        markerManager.addMarker(to: mapView, lat: 37.3500, lng: 127.10899, color: UIColor(red: 156/255, green: 163/255, blue: 175/255, alpha: 1))
-        { [weak self] in
-                    self?.presentMarkerSheet()
-        }
+
+    private func setupSearchAction() {
+        mapMainView.mapSearchTextField.addTarget(self, action: #selector(mapLocationSearch), for: .editingDidEndOnExit)
     }
-    
-    func setConstraints() {
-        [searchTextField, mapView].forEach {
-            view.addSubview($0)
+
+    private func setupMarkers() {
+        // 빨간색 마커
+        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3497, lng: 127.1171,
+                                color: UIColor(red: 239/255, green: 68/255, blue: 68/255, alpha: 1)) { [weak self] in
+            self?.presentMarkerSheet()
         }
 
-        searchTextField.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(12)
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(56)
-            $0.width.equalTo(343)
-        }
-        
-        mapView.snp.makeConstraints {
-            $0.top.equalTo(searchTextField.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
+        // 초록색 마커
+        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3595704, lng: 127.105399,
+                                color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1)) { [weak self] in
+            self?.presentMarkerSheet()
         }
 
+        // 회색 마커
+        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3500, lng: 127.10899,
+                                color: UIColor(red: 156/255, green: 163/255, blue: 175/255, alpha: 1)) { [weak self] in
+            self?.presentMarkerSheet()
+        }
     }
+
+    // 장소 검색 -> 위치 -> 위도, 경도로 변환
+    @objc private func mapLocationSearch() {
+        guard let query = mapMainView.mapSearchTextField.text, !query.isEmpty else { return }
+        print("mapLocationSearch query:", query)
+        mapSearchManager.geocode(query: query)
+    }
+    
+    private func moveCamera(lat: Double, lng: Double) {
+        let latLng = NMGLatLng(lat: lat, lng: lng)
+        let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
+        cameraUpdate.animation = .fly
+        cameraUpdate.animationDuration = 1.2
+        mapMainView.mapView.moveCamera(cameraUpdate)
+
+        // 마커 표시
+        let marker = NMFMarker(position: latLng)
+        marker.iconImage = NMF_MARKER_IMAGE_RED
+        marker.mapView = mapMainView.mapView
+    }
+
+    func onCoordinateFound() {
+        // RegisterLocateSettingView가 좌표를 찾으면 moveCamera 실행
+        mapSearchManager.onCoordinateFound = { [weak self] lat, lng in
+            self?.moveCamera(lat: lat, lng: lng)
+        }
+    }
+
 }
 
-// 시트 띄우기
 extension MapViewController {
+    // 마커 누르면 시트 띄우기
     func presentMarkerSheet() {
         let sheetVC = MarkerSheetViewController()
         sheetVC.modalPresentationStyle = .pageSheet
-        
+
         if let sheet = sheetVC.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
             sheet.preferredCornerRadius = 20
         }
-        
         present(sheetVC, animated: true)
     }
 }
