@@ -1,6 +1,6 @@
 import UIKit
 import SnapKit
-
+import CoreData
 
 class RegisterViewController: UIViewController {
     let registerView = RegisterView()
@@ -14,7 +14,7 @@ class RegisterViewController: UIViewController {
         configureUI()
         setupView()
         settingView()
-        buttonTappeds()
+        buttonTapped()
     }
     // 초기 뷰 셋팅
     func settingView() {
@@ -40,16 +40,18 @@ class RegisterViewController: UIViewController {
         }
     }
     
-    func buttonTappeds(){
-        // registerView의 다음 버튼 (*취소버튼 추가)
+    func buttonTapped(){
+        // registerView의 다음 버튼 (취소버튼 추가)
         registerView.nextButton.addTarget(self, action: #selector(goNext), for: .touchUpInside)
         
         // registerLocatinSetting(위치설정)의 다음,이전 버튼
         registerLocationSettingView.nextButton.addTarget(self, action: #selector(goNext), for: .touchUpInside)
         registerLocationSettingView.prevButton.addTarget(self, action: #selector(goPrev), for: .touchUpInside)
         
-        // RegisterCheck의 이전 버튼 (*완료버튼 추가)
+        // RegisterCheck의 이전 버튼 (완료버튼 추가)
         registerCheck.prevButton.addTarget(self, action: #selector(goPrev), for: .touchUpInside)
+        
+        registerCheck.finishButton.addTarget(self, action: #selector(saveScooterInfo), for: .touchUpInside)
     }
     
     
@@ -79,7 +81,41 @@ class RegisterViewController: UIViewController {
         
     }
     
-    // 완료 알럿 함수 만들기
+    // 킥보드 정보 저장 메서드
+    @objc func saveScooterInfo() {
+        let context = CoreDataStack.context
+        guard let entity = NSEntityDescription.entity(forEntityName: "ScooterEntity", in: context) else { return }
+        let scooter = NSManagedObject(entity: entity, insertInto: context)
+        
+        scooter.setValue(registerView.modelNameTextField.text ?? "", forKey: "modelName")
+        scooter.setValue(registerView.serialNumberTextField.text ?? "", forKey: "serialNumber")
+
+        
+        if let batteryText = registerView.batteryTextField.text,
+           let batteryValue = Int(batteryText) {
+            scooter.setValue(batteryValue, forKey: "battery")
+        } else {
+            scooter.setValue(0, forKey: "battery")
+        }
+
+        
+        scooter.setValue(registerLocationSettingView.searchTextField.text ?? "", forKey: "position")
+
+        do {
+            try context.save()
+            showAlert(title: "등록 완료", message: "킥보드 정보가 저장되었습니다.")
+        } catch {
+            print("저장 실패: \(error)")
+        }
+    }
+
+
+    // 등록완료 알럿
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
 
 }
 

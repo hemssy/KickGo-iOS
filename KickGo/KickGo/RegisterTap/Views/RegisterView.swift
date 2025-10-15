@@ -113,6 +113,7 @@ class RegisterView: UIView {
         super.init(frame: frame)
         configureUI()
         setupLayout()
+        setupTargets()
     }
     
     required init?(coder: NSCoder) {
@@ -218,4 +219,38 @@ class RegisterView: UIView {
             
         }
     }
+    
+    // 입력값 감시 및 다음버튼 활성화 제어
+    private func setupTargets() {
+        // 3개 텍스트필드의 입력 변화를 감지
+        [modelNameTextField, serialNumberTextField, batteryTextField].forEach {
+            $0.addTarget(self, action: #selector(textFieldsChanged), for: .editingChanged)
+        }
+
+        // 초기에는 비활성화 상태
+        nextButton.isEnabled = false
+        nextButton.backgroundColor = UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1)
+    }
+
+    @objc private func textFieldsChanged() {
+        // 세 칸 모두 입력되어야 활성화
+        let filled = !(modelNameTextField.text?.isEmpty ?? true) &&
+                     !(serialNumberTextField.text?.isEmpty ?? true) &&
+                     !(batteryTextField.text?.isEmpty ?? true)
+
+        // 버튼 상태 업데이트
+        nextButton.isEnabled = filled
+        
+        if filled {
+            // 활성화 상태(정보를 다 입력했을 때)
+            nextButton.backgroundColor = UIColor(red: 0.145, green: 0.388, blue: 0.922, alpha: 1) // 피그마 #2563EB 색깔
+            nextButton.setTitleColor(.white, for: .normal)
+        } else {
+            // 비활성화 상태(정보 하나라도 누락됐을 때)
+            nextButton.backgroundColor = UIColor(red: 229/255, green: 231/255, blue: 235/255, alpha: 1) // 피그마 #E5E7EB 색깔
+            nextButton.setTitleColor(.darkGray, for: .normal)
+        }
+        
+    }
+
 }
