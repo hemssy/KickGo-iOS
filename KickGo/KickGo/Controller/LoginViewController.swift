@@ -161,40 +161,42 @@ class LoginViewController: UIViewController {
     
     @objc private func loginButtonTapped() {
         let mainVC = MainViewController()
-        
         guard let id = IDTextField.text, !id.isEmpty,
-              let password = PasswordNameTextField.text else {
-            //알람 추가? 아이디와 비밀번호를 입력하세요.
+              let textFieldPassword = PasswordNameTextField.text, !textFieldPassword.isEmpty else {
+            showAlert(title: "로그인 실패", message: "이메일과 비밀번호를 입력하세요.")
             return
         }
         
-        guard let userDict = UserDefaults.standard.dictionary(forKey: id) else {
-            //알람 추가 존재하지 않은 아이디 입니다.
+        guard let userDict = UserDefaults.standard.dictionary(forKey: id),
+              let password = userDict["password"] as? String else {
+            showAlert(title: "로그인 실패", message: "존재하지 않는 이메일입니다.")
             return
         }
         
-        
-        guard let password = userDict["password"] as? String else {
-            //올바르지 않은 비밀번호 입니다.
-            return
-        }
         if PasswordNameTextField.text == password {
-            // 로그인 상태 저장
             UserDefaults.standard.set(true, forKey: "isLoggedIn")
             UserDefaults.standard.set(id, forKey: "loggedInUserID")
             
             navigationController?.pushViewController(mainVC, animated: true)
         } else {
-            print("틀린 비밀번호")
+            showAlert(title: "로그인 실패", message: "비밀번호가 올바르지 않습니다.")
         }
-        
-        
     }
 
     
     @objc private func signupButtonTapped() {
         let signupVC = SignUpVIewController()
         navigationController?.pushViewController(signupVC, animated: true)
+    }
+    
+    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let completAction = UIAlertAction(title: "확인", style: .default) { (_) in
+            completion?()
+        }
+        alert.addAction(completAction)
+        present(alert, animated: true)
     }
     
 }

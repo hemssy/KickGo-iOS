@@ -245,6 +245,7 @@ class RegisterView: UIView {
     }
     
     // 배터리 입력된 숫자 1~100체크
+    // 추후 알림 메세지 Error파일 만들어서 리팩토링하기
     var onInvalidBatteryValueEntered: ((String) -> Void)?
     func checkBatteryTextField() -> Bool {
         
