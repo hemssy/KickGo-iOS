@@ -338,9 +338,7 @@ class MyViewController: UIViewController {
 
     // 이용내역 버튼 액션
     @objc private func openHistory() {
-        let vc = UIViewController()
-        vc.title = "이용 내역"
-        vc.view.backgroundColor = .systemBackground
+        let vc = RentalHistoryViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     
