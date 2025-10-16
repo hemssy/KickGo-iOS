@@ -76,6 +76,7 @@ class MarkerSheetViewController: UIViewController {
         rentButton.setTitleColor(.white, for: .normal)
         rentButton.backgroundColor = UIColor(red: 37/255, green: 99/255, blue: 235/255, alpha: 1)
         rentButton.layer.cornerRadius = 14
+        rentButton.addTarget(self, action: #selector(didTapRentButton), for: .touchUpInside)
         
         // 닫기 버튼
         let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .medium)
@@ -166,5 +167,17 @@ class MarkerSheetViewController: UIViewController {
         fullStack.spacing = 4
         
         return fullStack
+    }
+}
+
+// 대여하기 눌렀을 때 코드를 구현하면 코드 길이가 좀 생길 것 같아서 extension으로 따로 빼놨습니다!
+extension MarkerSheetViewController {
+    @objc func didTapRentButton() {
+        let alert = UIAlertController(title: nil, message: "해당 킥보드를 대여하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .default))
+        alert.addAction(UIAlertAction(title: "대여하기", style: .default) { [weak self] _ in
+            print("확인")
+        })
+        present(alert, animated: true)
     }
 }
