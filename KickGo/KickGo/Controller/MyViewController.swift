@@ -144,10 +144,8 @@ class MyViewController: UIViewController {
         avatar.snp.makeConstraints { $0.size.equalTo(56) }
 
         nameLabel.font = .boldSystemFont(ofSize: 22)
-        nameLabel.text = "김킥고님"
         emailLabel.font = .systemFont(ofSize: 14)
         emailLabel.textColor = .secondaryLabel
-        emailLabel.text = "kickgo@example.com"
 
         let v = UIStackView(arrangedSubviews: [nameLabel, emailLabel])
         v.axis = .vertical
@@ -433,6 +431,26 @@ class MyViewController: UIViewController {
         alert.addAction(delete)
         present(alert, animated: true)
     }
+    
+    // viewWillAppear
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // 현재 로그인한 사용자 ID(이메일) 가져오기
+        let defaults = UserDefaults.standard
+        guard let userID = defaults.string(forKey: "loggedInUserID"),
+              let userDict = defaults.dictionary(forKey: userID),
+              let name = userDict["name"] as? String,
+              let email = userDict["id"] as? String else {
+            print("로그인된 사용자 정보를 불러올 수 없습니다.")
+            return
+        }
+
+        // 프로필헤더 UI 업데이트(이름, 이메일)
+        nameLabel.text = "\(name)님"
+        emailLabel.text = email
+    }
+
 
 }
 
