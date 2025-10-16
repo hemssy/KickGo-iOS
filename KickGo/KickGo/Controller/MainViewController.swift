@@ -5,6 +5,8 @@ class MainViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        //상단 back버튼 숨김처리
+        self.navigationItem.hidesBackButton = true
         setupTabs()
         setupTabBarAppearance()
     }

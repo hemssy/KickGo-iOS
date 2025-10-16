@@ -60,8 +60,12 @@ final class SplashViewController: UIViewController {
 
         // 1.5초 뒤 메인화면 전환
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            let mainVC = MainViewController()
+            //테스트
+            let mainVC = LoginViewController()
             let nav = UINavigationController(rootViewController: mainVC)
+            
+            //let mainVC = MainViewController()
+            //let nav = UINavigationController(rootViewController: mainVC)
             nav.modalTransitionStyle = .crossDissolve
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true)
