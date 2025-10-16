@@ -75,7 +75,7 @@ class SignUpVIewController: UIViewController {
         signUpButton.addTarget(self, action: #selector(completeSignUp), for: .touchUpInside)
         setupTargets()
         setupUI()
-        
+        hideKeyboardWhenTappedAround()
         // UserDefault 데이터 경로
         if let libraryDirectory = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first {
             print("UserDefaults 경로: \(libraryDirectory.path)/Preferences")

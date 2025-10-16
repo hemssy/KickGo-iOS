@@ -26,6 +26,7 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate {
         setupView()
         settingView()
         buttonTapped()
+        setupViewActions()
     }
     // 초기 뷰 셋팅
     func settingView() {
@@ -125,6 +126,17 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate {
         } catch {
             print("저장 실패: \(error)")
         }
+    }
+    
+    // ReigisterView, RegisterLocateSettingView 알람표시
+    private func setupViewActions(){
+        registerView.onInvalidBatteryValueEntered = { [weak self] message in
+            self?.showAlert(title: "입력 오류", message: message)
+        }
+        registerLocationSettingView.geocodingError = { [weak self] message in
+            self?.showAlert(title: "위치 검색 실패", message: message)
+        }
+        
     }
 
 
