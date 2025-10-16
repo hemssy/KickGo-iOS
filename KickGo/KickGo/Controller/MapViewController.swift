@@ -6,7 +6,8 @@ final class MapViewController: UIViewController {
     private let mapMainView = MapView()
     private let markerManager = MapMarkerManager()
     private let mapSearchManager = RegisterLocateSettingView() // 지오코딩 담당
-
+    private let locationnManager = MapCurrentLocation()
+    
     override func loadView() {
         view = mapMainView
     }
@@ -17,7 +18,8 @@ final class MapViewController: UIViewController {
         
         setupSearchAction()
         setupMarkers()
-        onCoordinateFound() 
+        onCoordinateFound()
+        setupLocationManager()
     }
 
     private func setupSearchAction() {
@@ -74,6 +76,11 @@ final class MapViewController: UIViewController {
         mapSearchManager.onCoordinateFound = { [weak self] lat, lng in
             self?.moveCamera(lat: lat, lng: lng)
         }
+    }
+    
+    func setupLocationManager() {
+        // locationManager의 mapView를 현재 지도와 연결
+        locationnManager.mapView = mapMainView.mapView.mapView
     }
 
 }

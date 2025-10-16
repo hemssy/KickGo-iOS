@@ -38,6 +38,11 @@ class MapView: UIView {
         mapSearchTextField.layer.cornerRadius = 10
         mapSearchTextField.leftView = iconContainer
         mapSearchTextField.leftViewMode = .always
+        
+        // 현재 위치 버튼 생성
+        mapView.showLocationButton = true
+        // 줌 인, 아웃 버튼 생성
+        mapView.showZoomControls = true
     }
     
     func setConstraints() {
