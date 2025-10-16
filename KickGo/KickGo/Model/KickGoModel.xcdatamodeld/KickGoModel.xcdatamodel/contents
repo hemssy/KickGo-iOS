@@ -3,6 +3,7 @@
     <entity name="ScooterEntity" representedClassName="ScooterEntity" syncable="YES" codeGenerationType="class">
         <attribute name="battery" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="modelName" optional="YES" attributeType="String"/>
+        <attribute name="ownerID" optional="YES" attributeType="String"/>
         <attribute name="position" optional="YES" attributeType="String"/>
         <attribute name="serialNumber" optional="YES" attributeType="String"/>
     </entity>

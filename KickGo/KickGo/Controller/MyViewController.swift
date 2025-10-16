@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import CoreData
 
 // 재사용하는 메뉴 행 뷰 클래스
 class MenuRowView: UIControl {
@@ -394,37 +395,44 @@ class MyViewController: UIViewController {
             preferredStyle: .alert
         )
 
-        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
         let delete = UIAlertAction(title: "탈퇴하기", style: .destructive) { _ in
             let defaults = UserDefaults.standard
-            
-            // 현재 로그인된 유저 ID 가져오기
-            if let userID = defaults.string(forKey: "loggedInUserID") {
-                // 해당 유저 정보 삭제
-                defaults.removeObject(forKey: userID)
+            guard let userID = defaults.string(forKey: "loggedInUserID") else { return }
+
+            // 코어데이터에서 해당 회원의 킥보드 삭제
+            let context = CoreDataStack.context
+            let request: NSFetchRequest<ScooterEntity> = ScooterEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "ownerID == %@", userID)
+            do {
+                let scooters = try context.fetch(request)
+                scooters.forEach { context.delete($0) }
+                try context.save()
+                print("\(userID)의 킥보드 전부 삭제 완료")
+            } catch {
+                print("코어데이터 삭제 오류:", error)
             }
-            
-            // 로그인 상태 초기화(로그아웃 로직이랑 같음)
+
+            // 유저디폴트 회원정보 및 로그인상태 삭제
+            defaults.removeObject(forKey: userID)
             defaults.removeObject(forKey: "isLoggedIn")
             defaults.removeObject(forKey: "loggedInUserID")
-            
-            // 로그인 화면으로 이동(로그아웃 로직이랑 같음)
+
+            // 로그인화면으로 이동
             let loginVC = LoginViewController()
             let nav = UINavigationController(rootViewController: loginVC)
             nav.modalPresentationStyle = .fullScreen
-            
-            // 현재 윈도우의 루트뷰컨트롤러 교체(로그아웃 로직이랑 같음)
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
                let window = sceneDelegate.window {
                 window.rootViewController = nav
                 window.makeKeyAndVisible()
             }
-            
         }
 
         alert.addAction(cancel)
         alert.addAction(delete)
         present(alert, animated: true)
     }
+
 }
 

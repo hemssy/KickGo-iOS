@@ -103,15 +103,18 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate {
         
         scooter.setValue(registerView.modelNameTextField.text ?? "", forKey: "modelName")
         scooter.setValue(registerView.serialNumberTextField.text ?? "", forKey: "serialNumber")
-
         
+        // 현재 로그인된 계정 ID 저장
+        if let userID = UserDefaults.standard.string(forKey: "loggedInUserID") {
+            scooter.setValue(userID, forKey: "ownerID")
+        }
+
         if let batteryText = registerView.batteryTextField.text,
            let batteryValue = Int(batteryText) {
             scooter.setValue(batteryValue, forKey: "battery")
         } else {
             scooter.setValue(0, forKey: "battery")
         }
-
         
         scooter.setValue(registerLocationSettingView.searchTextField.text ?? "", forKey: "position")
 
@@ -121,9 +124,9 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate {
             resetRegistrationForm()
         } catch {
             print("저장 실패: \(error)")
-            
         }
     }
+
 
 
     // 등록완료 알럿
