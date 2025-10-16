@@ -361,12 +361,17 @@ class MyViewController: UIViewController {
 
         let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         let logout = UIAlertAction(title: "로그아웃", style: .destructive) { _ in
-            // 로그인 화면으로 이동
+            // 1)로그인 상태 초기화
+            let defaults = UserDefaults.standard
+            defaults.removeObject(forKey: "isLoggedIn")
+            defaults.removeObject(forKey: "loggedInUserID")
+            
+            // 2)로그인 화면으로 이동
             let loginVC = LoginViewController()
             let nav = UINavigationController(rootViewController: loginVC)
             nav.modalPresentationStyle = .fullScreen
             
-            // 현재 윈도우의 루트뷰컨트롤러 교체
+            // 3)현재 윈도우의 루트뷰컨트롤러 교체
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
                let window = sceneDelegate.window {
                 window.rootViewController = nav
