@@ -1,51 +1,36 @@
 import UIKit
+import CoreData
 import NMapsMap
+import CoreLocation
 
 final class MapViewController: UIViewController {
-
+    
     private let mapMainView = MapView()
     private let markerManager = MapMarkerManager()
     private let mapSearchManager = RegisterLocateSettingView() // 지오코딩 담당
     private let locationnManager = MapCurrentLocation()
     
+    // 마커 색상
+    private let markerGray = Color9CA3AF  // 배터리 부족
+    private let markerGreen  = Color10B981  // 대여 가능
+    
     override func loadView() {
         view = mapMainView
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "지도"
         
         setupSearchAction()
-        setupMarkers()
         onCoordinateFound()
         setupLocationManager()
+        loadRegisterScooters()
     }
-
+    
     private func setupSearchAction() {
         mapMainView.mapSearchTextField.addTarget(self, action: #selector(mapLocationSearch), for: .editingDidEndOnExit)
     }
-
-    private func setupMarkers() {
-        // 빨간색 마커
-        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3497, lng: 127.1171,
-                                color: UIColor(red: 239/255, green: 68/255, blue: 68/255, alpha: 1)) { [weak self] in
-            self?.presentMarkerSheet()
-        }
-
-        // 초록색 마커
-        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3595704, lng: 127.105399,
-                                color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1)) { [weak self] in
-            self?.presentMarkerSheet()
-        }
-
-        // 회색 마커
-        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3500, lng: 127.10899,
-                                color: UIColor(red: 156/255, green: 163/255, blue: 175/255, alpha: 1)) { [weak self] in
-            self?.presentMarkerSheet()
-        }
-    }
-
     // 장소 검색 -> 위치 -> 위도, 경도로 변환
     @objc private func mapLocationSearch() {
         guard let query = mapMainView.mapSearchTextField.text, !query.isEmpty else { return }
@@ -59,7 +44,7 @@ final class MapViewController: UIViewController {
         cameraUpdate.animation = .fly
         cameraUpdate.animationDuration = 1.0
         mapMainView.mapView.mapView.moveCamera(cameraUpdate)
-
+        
         // 마커 표시
         let marker = NMFMarker(position: latLng)
         marker.iconImage = NMF_MARKER_IMAGE_RED
@@ -70,7 +55,7 @@ final class MapViewController: UIViewController {
         }
         marker.mapView = mapMainView.mapView.mapView
     }
-
+    
     func onCoordinateFound() {
         // RegisterLocateSettingView가 좌표를 찾으면 moveCamera 실행
         mapSearchManager.onCoordinateFound = { [weak self] lat, lng in
@@ -82,7 +67,65 @@ final class MapViewController: UIViewController {
         // locationManager의 mapView를 현재 지도와 연결
         locationnManager.mapView = mapMainView.mapView.mapView
     }
-
+    
+    // 킥보드 데이터를 가져와서 위도, 경도로 변환 -> 지도에 마커 표시
+    func loadRegisterScooters() {
+        let context = CoreDataStack.context
+        let request: NSFetchRequest<ScooterEntity> = ScooterEntity.fetchRequest()
+        
+        do {
+            let scooters = try context.fetch(request)
+            print("저장된 킥보드 개수: \(scooters.count)")
+            
+            // 킥보드 데이터를 반복해서 주소 -> 좌표로 변환
+            for (index, s) in scooters.enumerated() {
+                
+                let geocoder = CLGeocoder()  // 각 요청마다 새로운 CLGeocoder 생성
+                let batteryLevel = Int(s.battery)
+                
+                guard let position = s.position else { continue }
+                print("\(index)번째 지오코딩 요청 주소: \(position)")
+                
+                geocoder.geocodeAddressString(position) { [weak self] locationMarks, error in
+                    guard let self = self else { return }
+                    print("\(index)의 배터리: \(batteryLevel)")
+                    let markerColor: UIColor
+                    
+                    if batteryLevel < 20 {
+                        markerColor = UIColor.systemRed  // hex 설정해놓은거로 사용하니까 red는 색상이 안떠서 systemRed를 사용
+                    } else if batteryLevel < 70 {
+                        markerColor = self.markerGray
+                    } else {
+                        markerColor = self.markerGreen
+                    }
+                    
+                    if let error = error {
+                        print("\(index) 지오코딩 실패 \(position)")
+                        return
+                    }
+                    guard let coordinate = locationMarks?.first?.location?.coordinate else {
+                        print("\(index) 좌표 변환 실패 \(position)")
+                        return
+                    }
+                    print("\(index) 지오코딩 성공! \(position) 위도: \(coordinate.latitude), 경도: \(coordinate.longitude)")
+                    
+                    // 마커 추가 작업은 메인 스레드에서
+                    DispatchQueue.main.async {
+                        self.markerManager.addMarker(
+                            to: self.mapMainView.mapView.mapView ?? NMFMapView(),
+                            lat: coordinate.latitude,
+                            lng: coordinate.longitude,
+                            color: markerColor) {
+                                self.presentMarkerSheet()
+                            }
+                    }
+                }
+                
+            }
+        } catch {
+            print("킥보드 정보 불러오기 실패")
+        }
+    }
 }
 
 extension MapViewController {
@@ -90,7 +133,7 @@ extension MapViewController {
     func presentMarkerSheet() {
         let sheetVC = MarkerSheetViewController()
         sheetVC.modalPresentationStyle = .pageSheet
-
+        
         if let sheet = sheetVC.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
             sheet.preferredCornerRadius = 20

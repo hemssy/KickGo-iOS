@@ -6,7 +6,7 @@ import NMapsMap
 class MapCurrentLocation: NSObject, CLLocationManagerDelegate {
     
     var locationManager = CLLocationManager()
-    var mapView = NMFMapView()
+    var mapView: NMFMapView?
     
     override init() {
         super.init()
@@ -42,8 +42,6 @@ class MapCurrentLocation: NSObject, CLLocationManagerDelegate {
         let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
         cameraUpdate.animation = .fly
         cameraUpdate.animationDuration = 1.0
-        mapView.moveCamera(cameraUpdate)
-        mapView.positionMode = .direction  // 현재 위치 나타내는 파란색 마커
         
     }
     
