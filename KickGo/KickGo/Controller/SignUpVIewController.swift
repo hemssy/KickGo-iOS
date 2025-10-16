@@ -41,8 +41,9 @@ class SignUpVIewController: UIViewController {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
         textField.backgroundColor = ColorF3F4F6
-        textField.placeholder = "010-0000-0000"
+        textField.placeholder = "01012345678"
         textField.autocapitalizationType = .none
+        textField.keyboardType = .numberPad
         return textField
     }()
     private let passwordLabel: UILabel = {
@@ -76,6 +77,7 @@ class SignUpVIewController: UIViewController {
         setupTargets()
         setupUI()
         hideKeyboardWhenTappedAround()
+        phoneNumsTextField.addTarget(self, action: #selector (phoneTextFieldDidChange), for: .editingChanged)
         // UserDefault 데이터 경로
         if let libraryDirectory = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first {
             print("UserDefaults 경로: \(libraryDirectory.path)/Preferences")
@@ -142,18 +144,32 @@ class SignUpVIewController: UIViewController {
     
     @objc private func completeSignUp() {
         let loginVC = LoginViewController()
+    
+        guard let name = nameTextField.text,
+              let id = emailLabelTextField.text,
+              let phoneNums = phoneNumsTextField.text,
+              let password = passwordLabelTextField.text else {
+            
+            return
+        }
+        guard id.isValidEmail else {
+            showAlert(title: "회원가입 오류", message: "유효하지 않은 이메일입니다.")
+            return
+        }
+        guard phoneNums.isValidPhoneNumber else {
+            showAlert(title: "회원가입 오류", message: "유효하지 않은 전화번호입니다.")
+            return
+        }
         // 데이터 수집
         let userDictionary: [String : Any] = [
-            "name": nameTextField.text ?? "",
-            "id": emailLabelTextField.text ?? "",
-            "phoneNums": phoneNumsTextField.text ?? "",
-            "password": passwordLabelTextField.text ?? ""
+            "name": name,
+            "id": id,
+            "phoneNums": phoneNums,
+            "password": password
         ]
-        
-        
-        defaults.set(userDictionary, forKey: emailLabelTextField.text ?? "")
-        
+        defaults.set(userDictionary, forKey: id)
         navigationController?.pushViewController(loginVC, animated: true)
+        
     }
     // 입력값 감시 및 다음버튼 활성화 제어
     private func setupTargets() {
@@ -176,6 +192,8 @@ class SignUpVIewController: UIViewController {
         // 버튼 상태 업데이트
         signUpButton.isEnabled = filled
         
+        
+        
         if filled {
             // 활성화 상태(정보를 다 입력했을 때)
             signUpButton.backgroundColor = Color2563EB
@@ -187,5 +205,21 @@ class SignUpVIewController: UIViewController {
         }
     }
     
+    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let completAction = UIAlertAction(title: "확인", style: .default) { (_) in
+            completion?()
+        }
+        alert.addAction(completAction)
+        present(alert, animated: true)
+    }
+    
+    @objc private func phoneTextFieldDidChange(_ textField: UITextField) {
+        let maxPhoneNums = 11
+        if let text = textField.text, text.count > maxPhoneNums {
+            let textChange = String(text.prefix(maxPhoneNums))
+            textField.text = textChange
+        }
+    }
 }
-

@@ -311,9 +311,6 @@ class RegisterLocateSettingView: UIView {
         }.resume()
     }
     
-    
-    
-    
     func updateMap(lat: Double, lng: Double) {
         print("updateMap -> lat:", lat, "lng:", lng)
         
