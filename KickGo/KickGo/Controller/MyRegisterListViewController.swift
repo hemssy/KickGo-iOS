@@ -32,6 +32,11 @@ class MyRegisterListViewController: UIViewController, UITableViewDataSource {
         let context = CoreDataStack.context
         let request: NSFetchRequest<ScooterEntity> = ScooterEntity.fetchRequest()
 
+        // 현재 로그인한 회원 ID로 필터링하기(필터링하면 계정마다 계정에 해당하는 정보가 보여짐)
+        if let userID = UserDefaults.standard.string(forKey: "loggedInUserID") {
+            request.predicate = NSPredicate(format: "ownerID == %@", userID)
+        }
+
         do {
             scooters = try context.fetch(request)
             tableView.reloadData()
@@ -39,6 +44,7 @@ class MyRegisterListViewController: UIViewController, UITableViewDataSource {
             print("불러오기 실패:", error)
         }
     }
+
 
     // 테이블뷰 데이터소스
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
