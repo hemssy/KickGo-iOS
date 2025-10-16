@@ -10,7 +10,7 @@ class MyRegisterListViewController: UIViewController, UITableViewDataSource {
         super.viewDidLoad()
         title = "내가 등록한 킥보드"
         view.backgroundColor = .systemBackground
-
+        hideKeyboardWhenTappedAround()
         setupTableView()
         fetchScooters()
     }

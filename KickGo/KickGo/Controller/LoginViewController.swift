@@ -73,6 +73,7 @@ class LoginViewController: UIViewController {
         // 상단 back버튼 숨기기
         navigationItem.hidesBackButton = true
         
+        hideKeyboardWhenTappedAround()
         setupUI()
         LoginButton.addTarget(self, action: #selector (loginButtonTapped), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
