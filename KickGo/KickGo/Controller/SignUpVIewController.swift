@@ -4,6 +4,8 @@ import UIKit
 import SnapKit
 
 class SignUpVIewController: UIViewController {
+    let defaults = UserDefaults.standard
+    
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.text = "이름"
@@ -60,8 +62,8 @@ class SignUpVIewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("회원가입 완료", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = Color2563EB
+        button.setTitleColor(.darkGray, for: .normal)
+        button.backgroundColor = ColorE5E7EB
         button.layer.cornerRadius = 12
         return button
     }()
@@ -70,7 +72,14 @@ class SignUpVIewController: UIViewController {
         super.viewDidLoad()
         title = "회원가입"
         view.backgroundColor = .white
+        signUpButton.addTarget(self, action: #selector(completeSignUp), for: .touchUpInside)
+        setupTargets()
         setupUI()
+        
+        // UserDefault 데이터 경로
+        if let libraryDirectory = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first {
+            print("UserDefaults 경로: \(libraryDirectory.path)/Preferences")
+        }
     }
     
     func setupUI(){
@@ -131,4 +140,52 @@ class SignUpVIewController: UIViewController {
         }
     }
     
+    @objc private func completeSignUp() {
+        let loginVC = LoginViewController()
+        // 데이터 수집
+        let userDictionary: [String : Any] = [
+            "name": nameTextField.text ?? "",
+            "id": emailLabelTextField.text ?? "",
+            "phoneNums": phoneNumsTextField.text ?? "",
+            "password": passwordLabelTextField.text ?? ""
+        ]
+        
+        
+        defaults.set(userDictionary, forKey: emailLabelTextField.text ?? "")
+        
+        navigationController?.pushViewController(loginVC, animated: true)
+    }
+    // 입력값 감시 및 다음버튼 활성화 제어
+    private func setupTargets() {
+        // 3개 텍스트필드의 입력 변화를 감지
+        [nameTextField,emailLabelTextField,phoneNumsTextField,passwordLabelTextField].forEach {
+            $0.addTarget(self, action: #selector(textFieldsChanged), for: .editingChanged)
+        }
+        
+        // 초기에는 비활성화 상태
+        signUpButton.isEnabled = false
+        signUpButton.backgroundColor = ColorE5E7EB
+    }
+    
+    @objc private func textFieldsChanged() {
+        // 세 칸 모두 입력되어야 활성화
+        let filled = !(nameTextField.text?.isEmpty ?? true) &&
+        !(emailLabelTextField.text?.isEmpty ?? true) &&
+        !(phoneNumsTextField.text?.isEmpty ?? true) &&
+        !(passwordLabelTextField.text?.isEmpty ?? true)
+        // 버튼 상태 업데이트
+        signUpButton.isEnabled = filled
+        
+        if filled {
+            // 활성화 상태(정보를 다 입력했을 때)
+            signUpButton.backgroundColor = Color2563EB
+            signUpButton.setTitleColor(.white, for: .normal)
+        } else {
+            // 비활성화 상태(정보 하나라도 누락됐을 때)
+            signUpButton.backgroundColor = ColorE5E7EB
+            signUpButton.setTitleColor(.darkGray, for: .normal)
+        }
+    }
+    
 }
+

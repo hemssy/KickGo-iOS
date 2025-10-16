@@ -9,7 +9,7 @@ class LoginViewController: UIViewController {
     private let appNameImageView = UIImageView(image: UIImage(named: "kickgo_logo_text"))
     private let subtitleLabel = UILabel()
     
-    private let firstColor = UIColor(red: 239/255, green: 246/255, blue: 255/255, alpha: 1.0)
+    private let firstColor = ColorEFF6FF
     
     private lazy var gradientLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
@@ -70,8 +70,23 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.layer.insertSublayer(gradientLayer, at: 0)
+        // 상단 back버튼 숨기기
+        navigationItem.hidesBackButton = true
         
         setupUI()
+        LoginButton.addTarget(self, action: #selector (loginButtonTapped), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
+        
+        //테스트 회원
+        let testdefaults = UserDefaults.standard
+        let testUser: [String : Any] = [
+            "name": "김킥고",
+            "id": "kickgo@example.com",
+            "phoneNums":"010-0000-0000",
+            "password": "1234"
+        ]
+        testdefaults.set(testUser, forKey: "kickgo@example.com")
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -152,4 +167,40 @@ class LoginViewController: UIViewController {
             make.centerX.equalToSuperview()
         }
     }
+    
+    @objc private func loginButtonTapped() {
+        let mainVC = MainViewController()
+        
+        guard let id = IDTextField.text, !id.isEmpty,
+              let password = PasswordNameTextField.text else {
+            //알람 추가? 아이디와 비밀번호를 입력하세요.
+            return
+        }
+        
+        guard let userDict = UserDefaults.standard.dictionary(forKey: id) else {
+            //알람 추가 존재하지 않은 아이디 입니다.
+            return
+        }
+        
+        
+        guard let password = userDict["password"] as? String else {
+            //올바르지 않은 비밀번호 입니다.
+            return
+        }
+        if PasswordNameTextField.text == password {
+            print("로그인 성공")
+            navigationController?.pushViewController(mainVC, animated: true)
+        } else {
+            print("틀린 비밀번호")
+        }
+        
+        
+    }
+
+    
+    @objc private func signupButtonTapped() {
+        let signupVC = SignUpVIewController()
+        navigationController?.pushViewController(signupVC, animated: true)
+    }
+    
 }
