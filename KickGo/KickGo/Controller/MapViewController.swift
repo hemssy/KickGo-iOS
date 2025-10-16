@@ -6,7 +6,8 @@ final class MapViewController: UIViewController {
     private let mapMainView = MapView()
     private let markerManager = MapMarkerManager()
     private let mapSearchManager = RegisterLocateSettingView() // 지오코딩 담당
-
+    private let locationnManager = MapCurrentLocation()
+    
     override func loadView() {
         view = mapMainView
     }
@@ -17,7 +18,8 @@ final class MapViewController: UIViewController {
         
         setupSearchAction()
         setupMarkers()
-        onCoordinateFound() 
+        onCoordinateFound()
+        setupLocationManager()
     }
 
     private func setupSearchAction() {
@@ -26,19 +28,19 @@ final class MapViewController: UIViewController {
 
     private func setupMarkers() {
         // 빨간색 마커
-        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3497, lng: 127.1171,
+        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3497, lng: 127.1171,
                                 color: UIColor(red: 239/255, green: 68/255, blue: 68/255, alpha: 1)) { [weak self] in
             self?.presentMarkerSheet()
         }
 
         // 초록색 마커
-        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3595704, lng: 127.105399,
+        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3595704, lng: 127.105399,
                                 color: UIColor(red: 16/255, green: 185/255, blue: 129/255, alpha: 1)) { [weak self] in
             self?.presentMarkerSheet()
         }
 
         // 회색 마커
-        markerManager.addMarker(to: mapMainView.mapView, lat: 37.3500, lng: 127.10899,
+        markerManager.addMarker(to: mapMainView.mapView.mapView, lat: 37.3500, lng: 127.10899,
                                 color: UIColor(red: 156/255, green: 163/255, blue: 175/255, alpha: 1)) { [weak self] in
             self?.presentMarkerSheet()
         }
@@ -56,7 +58,7 @@ final class MapViewController: UIViewController {
         let cameraUpdate = NMFCameraUpdate(scrollTo: latLng)
         cameraUpdate.animation = .fly
         cameraUpdate.animationDuration = 1.0
-        mapMainView.mapView.moveCamera(cameraUpdate)
+        mapMainView.mapView.mapView.moveCamera(cameraUpdate)
 
         // 마커 표시
         let marker = NMFMarker(position: latLng)
@@ -66,7 +68,7 @@ final class MapViewController: UIViewController {
         } else {
             marker.iconImage = NMF_MARKER_IMAGE_BLACK
         }
-        marker.mapView = mapMainView.mapView
+        marker.mapView = mapMainView.mapView.mapView
     }
 
     func onCoordinateFound() {
@@ -74,6 +76,11 @@ final class MapViewController: UIViewController {
         mapSearchManager.onCoordinateFound = { [weak self] lat, lng in
             self?.moveCamera(lat: lat, lng: lng)
         }
+    }
+    
+    func setupLocationManager() {
+        // locationManager의 mapView를 현재 지도와 연결
+        locationnManager.mapView = mapMainView.mapView.mapView
     }
 
 }

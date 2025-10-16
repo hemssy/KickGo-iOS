@@ -4,7 +4,7 @@ import NMapsMap
 
 class MapView: UIView {
     
-    let mapView = NMFMapView()
+    let mapView = NMFNaverMapView()
     let marker = NMFMarker()  // 지도 위에 표시되는 현재 위치 마커
     let mapSearchTextField = UITextField()
     let mapSearchImageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
@@ -38,6 +38,11 @@ class MapView: UIView {
         mapSearchTextField.layer.cornerRadius = 10
         mapSearchTextField.leftView = iconContainer
         mapSearchTextField.leftViewMode = .always
+        
+        // 현재 위치 버튼 생성
+        mapView.showLocationButton = true
+        // 줌 인, 아웃 버튼 생성
+        mapView.showZoomControls = true
     }
     
     func setConstraints() {
