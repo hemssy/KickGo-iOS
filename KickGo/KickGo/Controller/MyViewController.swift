@@ -396,8 +396,30 @@ class MyViewController: UIViewController {
 
         let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         let delete = UIAlertAction(title: "탈퇴하기", style: .destructive) { _ in
-            // 여기에 실제 탈퇴 처리 로직이 나중에 들어갈 예정..
-            print("회원탈퇴 완료")
+            let defaults = UserDefaults.standard
+            
+            // 현재 로그인된 유저 ID 가져오기
+            if let userID = defaults.string(forKey: "loggedInUserID") {
+                // 해당 유저 정보 삭제
+                defaults.removeObject(forKey: userID)
+            }
+            
+            // 로그인 상태 초기화(로그아웃 로직이랑 같음)
+            defaults.removeObject(forKey: "isLoggedIn")
+            defaults.removeObject(forKey: "loggedInUserID")
+            
+            // 로그인 화면으로 이동(로그아웃 로직이랑 같음)
+            let loginVC = LoginViewController()
+            let nav = UINavigationController(rootViewController: loginVC)
+            nav.modalPresentationStyle = .fullScreen
+            
+            // 현재 윈도우의 루트뷰컨트롤러 교체(로그아웃 로직이랑 같음)
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
+               let window = sceneDelegate.window {
+                window.rootViewController = nav
+                window.makeKeyAndVisible()
+            }
+            
         }
 
         alert.addAction(cancel)

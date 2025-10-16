@@ -77,16 +77,6 @@ class LoginViewController: UIViewController {
         LoginButton.addTarget(self, action: #selector (loginButtonTapped), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
         
-        //테스트 회원
-        let testdefaults = UserDefaults.standard
-        let testUser: [String : Any] = [
-            "name": "김킥고",
-            "id": "kickgo@example.com",
-            "phoneNums":"010-0000-0000",
-            "password": "1234"
-        ]
-        testdefaults.set(testUser, forKey: "kickgo@example.com")
-        
     }
     
     override func viewDidLayoutSubviews() {
@@ -188,7 +178,10 @@ class LoginViewController: UIViewController {
             return
         }
         if PasswordNameTextField.text == password {
-            print("로그인 성공")
+            // 로그인 상태 저장
+            UserDefaults.standard.set(true, forKey: "isLoggedIn")
+            UserDefaults.standard.set(id, forKey: "loggedInUserID")
+            
             navigationController?.pushViewController(mainVC, animated: true)
         } else {
             print("틀린 비밀번호")
