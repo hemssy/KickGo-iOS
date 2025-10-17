@@ -75,6 +75,7 @@ class LoginViewController: UIViewController {
         
         hideKeyboardWhenTappedAround()
         setupUI()
+        lastLoginfo()
         LoginButton.addTarget(self, action: #selector (loginButtonTapped), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
         
@@ -177,9 +178,21 @@ class LoginViewController: UIViewController {
             UserDefaults.standard.set(true, forKey: "isLoggedIn")
             UserDefaults.standard.set(id, forKey: "loggedInUserID")
             
+            UserDefaults.standard.set(id, forKey: "lastUseEmail")
+            UserDefaults.standard.set(textFieldPassword, forKey: "lastUsePassword")
+            
             navigationController?.pushViewController(mainVC, animated: true)
         } else {
             showAlert(title: "로그인 실패", message: "비밀번호가 올바르지 않습니다.")
+        }
+    }
+    
+    private func lastLoginfo(){
+        if let lastUsedEmail = UserDefaults.standard.string(forKey: "lastUseEmail"){
+            IDTextField.text = lastUsedEmail
+        }
+        if let lastUsedPassword = UserDefaults.standard.string(forKey: "lastUsePassword"){
+            PasswordNameTextField.text = lastUsedPassword
         }
     }
 
