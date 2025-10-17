@@ -31,10 +31,6 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func configureUI() {
-        // 상단
-        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        backButton.tintColor = .black
-        backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         
         titleLabel.text = "킥보드 반납"
         timeLabel.font = .boldSystemFont(ofSize: 18)
@@ -59,9 +55,7 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
         sectionTitleLabel.font = .boldSystemFont(ofSize: 16)
         
         // 지도
-//        returnMap.showLocationButton = true
         returnMap.mapView.positionMode = .disabled
-//        returnMap.mapView.locationOverlay.hidden = true  // 파란 점 숨기기
         
         // 현재 위치 버튼
         currentLocationButton.setTitle("현재 위치로 반납", for: .normal)
@@ -152,9 +146,6 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
     }
     
-    @objc func didTapBackButton() {
-        dismiss(animated: true)
-    }
     
     // 현재 위치 버튼 동작
     @objc func didTapCurrentLocationButton() {
