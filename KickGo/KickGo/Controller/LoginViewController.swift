@@ -3,18 +3,37 @@ import Foundation
 import UIKit
 import SnapKit
 
-class LoginViewController: UIViewController {
-    private let logoBgView = UIView()
-    private let logoImageView = UIImageView(image: UIImage(systemName: "bicycle"))
-    private let appNameImageView = UIImageView(image: UIImage(named: "kickgo_logo_text"))
-    private let subtitleLabel = UILabel()
-    
-    private let firstColor = ColorEFF6FF
-    
+class LoginViewController: UIViewController, CreateAlert {
+    private let logoBgView: UIView = {
+        let uiView = UIView()
+        uiView.backgroundColor = Color2563EB
+        uiView.layer.cornerRadius = 20
+        return uiView
+    }()
+    private let logoImageView: UIImageView = {
+        let img = UIImageView()
+        img.image = UIImage(systemName: "bicycle")
+        img.contentMode = .scaleAspectFit
+        img.tintColor = .white
+        return img
+    }()
+    private let appNameImageView: UIImageView = {
+        let img = UIImageView()
+        img.image = UIImage(named: "kickgo_logo_text")
+        img.contentMode = .scaleAspectFit
+        return img
+    }()
+    private let subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "스마트한 킥보드 라이딩"
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .gray
+        return label
+    }()
     private lazy var gradientLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = .zero
-        gradientLayer.colors = [firstColor.cgColor, UIColor.white.cgColor]
+        gradientLayer.colors = [ColorEFF6FF.cgColor, UIColor.white.cgColor]
         return gradientLayer
     }()
     let IDTextField: UITextField = {
@@ -25,7 +44,7 @@ class LoginViewController: UIViewController {
         textField.autocapitalizationType = .none
         return textField
     }()
-    let PasswordNameTextField: UITextField = {
+    let PasswordTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
         textField.backgroundColor = .white
@@ -66,93 +85,70 @@ class LoginViewController: UIViewController {
         stackView.alignment = .center
         return stackView
     }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.layer.insertSublayer(gradientLayer, at: 0)
-        // 상단 back버튼 숨기기
         navigationItem.hidesBackButton = true
-        
         hideKeyboardWhenTappedAround()
         setupUI()
+        setupLayout()
         lastLoginfo()
         LoginButton.addTarget(self, action: #selector (loginButtonTapped), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
-        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = view.bounds
+    }
+    //view에 추가하는 역할과 Auto Layout 제약조건을 설정하는 역할 함수 구분
+    private func setupUI() {
+        [appNameImageView,logoBgView,subtitleLabel,IDTextField,PasswordTextField,LoginButton,signUpStackView].forEach{ view.addSubview($0)}
+        logoBgView.addSubview(logoImageView)
         
+        [signUpLabel,signUpButton].forEach{ signUpStackView.addArrangedSubview($0)}
     }
     
-    private func setupUI() {
-        // 앱 이름 이미지 (중앙 기준이 됨)
-        appNameImageView.contentMode = .scaleAspectFit
-        view.addSubview(appNameImageView)
+    private func setupLayout(){
         appNameImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(40)
             make.top.equalTo(view.safeAreaLayoutGuide).inset(130)
         }
         
-        // 로고 배경 + 자전거 아이콘 (앱 이름 위쪽)
-        logoBgView.backgroundColor = UIColor(red: 0.15, green: 0.39, blue: 0.93, alpha: 1.0) // 피그마 배경색 #2563EB
-        logoBgView.layer.cornerRadius = 20
-        view.addSubview(logoBgView)
         logoBgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(appNameImageView.snp.top).offset(-20)
             make.width.height.equalTo(80)
         }
         
-        logoImageView.tintColor = .white
-        logoImageView.contentMode = .scaleAspectFit
-        logoBgView.addSubview(logoImageView)
         logoImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.height.equalTo(36)
         }
         
-        // 슬로건 (앱 이름 아래쪽)
-        subtitleLabel.text = "스마트한 킥보드 라이딩"
-        subtitleLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        subtitleLabel.textColor = .gray
-        view.addSubview(subtitleLabel)
         subtitleLabel.snp.makeConstraints { make in
             make.top.equalTo(appNameImageView.snp.bottom).offset(8)
             make.centerX.equalToSuperview()
         }
         
-        // 이메일 입력 (슬로건 아래)
-        view.addSubview(IDTextField)
         IDTextField.snp.makeConstraints{ make in
             make.top.equalTo(subtitleLabel.snp.bottom).offset(48)
             make.centerX.equalToSuperview()
             make.width.equalTo(300)
             make.height.equalTo(50)
         }
-        // 비밀번호 입력 (이메일 아래)
-        view.addSubview(PasswordNameTextField)
-        PasswordNameTextField.snp.makeConstraints{ make in
+        PasswordTextField.snp.makeConstraints{ make in
             make.top.equalTo(IDTextField.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(IDTextField)
         }
-        // 로그인 버튼 (비밀번호 아래)
-        view.addSubview(LoginButton)
+        
         LoginButton.snp.makeConstraints{ make in
-            make.top.equalTo(PasswordNameTextField.snp.bottom).offset(68)
+            make.top.equalTo(PasswordTextField.snp.bottom).offset(68)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(IDTextField)
         }
-        
-        // 회원가입 텍스트 + 버튼 스텍뷰
-        signUpStackView.addArrangedSubview(signUpLabel)
-        signUpStackView.addArrangedSubview(signUpButton)
-        
-        view.addSubview(signUpStackView)
         
         signUpStackView.snp.makeConstraints { make in
             make.top.equalTo(LoginButton.snp.bottom).offset(130)
@@ -160,21 +156,26 @@ class LoginViewController: UIViewController {
         }
     }
     
+    /// 에러 처리 개선 :  do-try-catch 와 커스텀 에러 타입으로 처리
+    /// 예상 질문 : UserDefaults를 사용한 이유
+    /// 장점 : 빠르게 개발 가능함. 별도의 라이브러리 없이 즉시 사용가능
+    /// 단점 : 보안이 매우 취약함.
+    /// 단기간에 빠르게 만들어야 하기 때문에 사용했으며 보안이 약하기 때문에 이후 정보들을 키체인에 저장 하거나 외부 서버를 이용해야한다.
     @objc private func loginButtonTapped() {
-        let mainVC = MainViewController()
-        guard let id = IDTextField.text, !id.isEmpty,
-              let textFieldPassword = PasswordNameTextField.text, !textFieldPassword.isEmpty else {
-            showAlert(title: "로그인 실패", message: "이메일과 비밀번호를 입력하세요.")
-            return
-        }
-        
-        guard let userDict = UserDefaults.standard.dictionary(forKey: id),
-              let password = userDict["password"] as? String else {
-            showAlert(title: "로그인 실패", message: "존재하지 않는 이메일입니다.")
-            return
-        }
-        
-        if PasswordNameTextField.text == password {
+        do {
+            let mainVC = MainViewController()
+            
+            guard let id = IDTextField.text, !id.isEmpty,
+                  let textFieldPassword = PasswordTextField.text, !textFieldPassword.isEmpty else {
+                throw LoginError.emptyField
+            }
+            guard let userDict = UserDefaults.standard.dictionary(forKey: id),
+                  let password = userDict["password"] as? String else {
+                throw LoginError.incorrectID
+            }
+            guard textFieldPassword == password else {
+                throw LoginError.incorrectpaswword
+            }
             UserDefaults.standard.set(true, forKey: "isLoggedIn")
             UserDefaults.standard.set(id, forKey: "loggedInUserID")
             
@@ -182,8 +183,12 @@ class LoginViewController: UIViewController {
             UserDefaults.standard.set(textFieldPassword, forKey: "lastUsePassword")
             
             navigationController?.pushViewController(mainVC, animated: true)
-        } else {
-            showAlert(title: "로그인 실패", message: "비밀번호가 올바르지 않습니다.")
+        } catch{
+            if let loginError = error as? LoginError{
+                alertShow(title: "로그인 실패", message: loginError.message)
+            } else {
+                alertShow(title: "로그인 실패", message: "오류 발생")
+            }
         }
     }
     
@@ -192,7 +197,7 @@ class LoginViewController: UIViewController {
             IDTextField.text = lastUsedEmail
         }
         if let lastUsedPassword = UserDefaults.standard.string(forKey: "lastUsePassword"){
-            PasswordNameTextField.text = lastUsedPassword
+            PasswordTextField.text = lastUsedPassword
         }
     }
 
@@ -201,15 +206,4 @@ class LoginViewController: UIViewController {
         let signupVC = SignUpVIewController()
         navigationController?.pushViewController(signupVC, animated: true)
     }
-    
-    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let completAction = UIAlertAction(title: "확인", style: .default) { (_) in
-            completion?()
-        }
-        alert.addAction(completAction)
-        present(alert, animated: true)
-    }
-    
 }
