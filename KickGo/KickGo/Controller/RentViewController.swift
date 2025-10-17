@@ -8,15 +8,8 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
     
     private let titleLabel = UILabel()
     private let backButton = UIButton()
-    
-    private let returnInfo = UIView()
-    private let scooterLabel = UILabel()
-    private let timeLabel = UILabel()
-    private let priceLabel = UILabel()
-    
     private let sectionTitleLabel = UILabel()
     private let returnMap = NMFNaverMapView()
-    
     private let currentLocationButton = UIButton()
     private let returnCompletedButton = UIButton()
     private let locationManager = CLLocationManager()
@@ -31,26 +24,16 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func configureUI() {
-        
+        // 타이틀
         titleLabel.text = "킥보드 반납"
-        timeLabel.font = .boldSystemFont(ofSize: 18)
-
-        // 정보 카드
-        returnInfo.backgroundColor = UIColor(red: 239/255, green: 246/255, blue: 255/255, alpha: 1)
-        returnInfo.layer.cornerRadius = 16
+        titleLabel.font = .boldSystemFont(ofSize: 20)
         
-        scooterLabel.text = "KickGo Pro(LG001)"
-        scooterLabel.font = .boldSystemFont(ofSize: 16)
-        scooterLabel.textColor = Color2563EB
-    
-        timeLabel.text = "이용 시간: 30분 47초"
-        timeLabel.font = .boldSystemFont(ofSize: 16)
-        timeLabel.textColor = Color2563EB
+        // 뒤로가기 버튼 (필요시 아이콘 추가)
+        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        backButton.tintColor = .black
+        backButton.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         
-        priceLabel.text = "요금: 1,500원"
-        priceLabel.font = .boldSystemFont(ofSize: 16)
-        priceLabel.textColor = Color2563EB
-        
+        // 섹션 타이틀
         sectionTitleLabel.text = "반납 위치 선택"
         sectionTitleLabel.font = .boldSystemFont(ofSize: 16)
         
@@ -74,11 +57,8 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
         returnCompletedButton.titleLabel?.font = .boldSystemFont(ofSize: 18)
         returnCompletedButton.addTarget(self, action: #selector(didTapComplete), for: .touchUpInside)
         
-        [backButton, titleLabel, returnInfo, sectionTitleLabel, returnMap, currentLocationButton, returnCompletedButton].forEach {
+        [backButton, titleLabel, sectionTitleLabel, returnMap, currentLocationButton, returnCompletedButton].forEach {
             view.addSubview($0)
-        }
-        [scooterLabel, timeLabel, priceLabel].forEach {
-            returnInfo.addSubview($0)
         }
     }
     
@@ -94,67 +74,46 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
             $0.leading.equalTo(backButton.snp.trailing).offset(10)
         }
 
-        returnInfo.snp.makeConstraints {
-            $0.top.equalTo(backButton.snp.bottom).offset(22)
-            $0.leading.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(100)
-        }
-
-        scooterLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(12)
-            $0.leading.equalToSuperview().inset(12)
-        }
-        
-        timeLabel.snp.makeConstraints {
-            $0.top.equalTo(scooterLabel.snp.bottom).offset(8)
-            $0.leading.equalTo(scooterLabel)
-        }
-        
-        priceLabel.snp.makeConstraints {
-            $0.top.equalTo(timeLabel.snp.bottom).offset(8)
-            $0.leading.equalTo(scooterLabel)
-        }
-        
         sectionTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(returnInfo.snp.bottom).offset(22)
-            $0.leading.equalTo(returnInfo)
+            $0.top.equalTo(backButton.snp.bottom).offset(22)
+            $0.leading.equalToSuperview().inset(16)
         }
         
         returnMap.snp.makeConstraints {
             $0.top.equalTo(sectionTitleLabel.snp.bottom).offset(14)
-            $0.leading.trailing.equalTo(returnInfo)
+            $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(256)
         }
 
         currentLocationButton.snp.makeConstraints {
             $0.top.equalTo(returnMap.snp.bottom).offset(16)
-            $0.leading.trailing.equalTo(returnInfo)
+            $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(60)
         }
 
         returnCompletedButton.snp.makeConstraints {
             $0.top.equalTo(currentLocationButton.snp.bottom).offset(64)
-            $0.leading.trailing.equalTo(returnInfo)
+            $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(55)
         }
     }
     
-    // 위치 설정
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
     
+    @objc func didTapBackButton() {
+        dismiss(animated: true)
+    }
     
-    // 현재 위치 버튼 동작
     @objc func didTapCurrentLocationButton() {
         currentLocationButton.layer.borderWidth = 2
         currentLocationButton.layer.borderColor = Color2563EB.cgColor
         currentLocationButton.backgroundColor = UIColor(red: 239/255, green: 246/255, blue: 255/255, alpha: 1)
         currentLocationButton.setTitleColor(Color2563EB, for: .normal)
         
-        // 현재 위치 가져오기
         guard let location = locationManager.location else {
             print("현재 위치 정보를 가져올 수 없습니다.")
             return
@@ -167,28 +126,19 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
         returnMap.mapView.moveCamera(cameraUpdate)
         
         // 마커 표시
-        func returnMarker(lat: Double, lng: Double) {
-            // 마커 표시
-            let marker = NMFMarker(position:NMGLatLng(lat: lat, lng: lng))
-            marker.iconImage = NMF_MARKER_IMAGE_RED
-            if let sym = UIImage(systemName: "mappin.and.ellipse") {
-                marker.iconImage = NMFOverlayImage(image: sym)
-            } else {
-                marker.iconImage = NMF_MARKER_IMAGE_BLACK
-            }
-            marker.mapView = returnMap.mapView
+        let marker = NMFMarker(position: NMGLatLng(lat: lat, lng: lng))
+        if let sym = UIImage(systemName: "mappin.and.ellipse") {
+            marker.iconImage = NMFOverlayImage(image: sym)
         }
-        returnMarker(lat: lat, lng: lng)
+        marker.mapView = returnMap.mapView
     }
     
-    // 반납 완료 버튼 누르면
     @objc func didTapComplete() {
         let alert = UIAlertController(title: nil, message: "킥보드가 성공적으로 반납되었습니다.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            print("반납 완료")
-            self.dismiss(animated: true)
+            self?.dismiss(animated: true)
         })
         present(alert, animated: true)
     }
 }
+
