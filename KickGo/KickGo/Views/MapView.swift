@@ -48,6 +48,7 @@ class MapView: UIView {
         // 반납 카드
         returnContainerView.backgroundColor = .systemBlue
         returnContainerView.layer.cornerRadius = 16
+        returnContainerView.isHidden = true  // 기본적으로 숨겨져있는 상태!
         
         timeLabel.text = "0:02"
         timeLabel.font = .boldSystemFont(ofSize: 24)
@@ -121,7 +122,17 @@ class MapView: UIView {
     // 반납하기 눌렀을 때
     @objc func didTapReturnButton() {
         print("반납하기")
-        // 반납하기 창으로 넘어가는 동시에 반납하기 버튼 사라짐 (반납하기 창은 구현 할 예정입니다)
+        // 이용 상태 false 로 변경
+        let defaults = UserDefaults.standard
+        if let userID = defaults.string(forKey: "loggedInUserID") {
+            defaults.set(false, forKey: "isRidingNow_\(userID)")
+        }
+        
+        // 반납버튼 눌렀을 때 숨기기 처리
+        // 지금은 반납버튼을 숨기기로 처리하지만 버튼을 누르면 반납 절차화면 로직이 이부분에 추가될 예정
         returnContainerView.isHidden = true
+
+        // 다른 화면(MyViewController 등)에 알림 보내기
+        NotificationCenter.default.post(name: .ridingStatusChanged, object: nil)
     }
 }
