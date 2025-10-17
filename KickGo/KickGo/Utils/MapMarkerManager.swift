@@ -2,8 +2,8 @@ import NMapsMap
 
 class MapMarkerManager {
     
-    func addMarker( to mapView: NMFMapView, lat: Double, lng: Double, color: UIColor, onTap: (() -> Void)? = nil
-    ) {
+    func addMarker( to mapView: NMFMapView, scooter: ScooterEntity, lat: Double, lng: Double, color: UIColor, onTap: ((ScooterEntity) -> Void)? = nil)
+    {
         let marker = NMFMarker()
         
         marker.position = NMGLatLng(lat: lat, lng: lng)
@@ -12,7 +12,8 @@ class MapMarkerManager {
         
         // 마커 눌렀을 때 동작
         marker.touchHandler = { _ in
-            onTap?()
+            onTap?(scooter)  // 클릭 시 해당 킥보드 정보 전달
+            print("\(scooter)")
             print("tap")
             return true
         }
