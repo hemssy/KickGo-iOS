@@ -3,7 +3,7 @@ import CoreData
 import NMapsMap
 import CoreLocation
 
-final class MapViewController: UIViewController, MapViewDelegate {
+class MapViewController: UIViewController, MapViewDelegate {
     // 반납하기 누르면 rentViewController로 넘어가게
     func mapViewDidTapReturnButton(_ mapView: MapView) {
         let rentVC = RentViewController()
@@ -11,10 +11,9 @@ final class MapViewController: UIViewController, MapViewDelegate {
         self.present(rentVC, animated: true, completion: nil)
     }
     
-    
     private let mapMainView = MapView()
     private let markerManager = MapMarkerManager()
-    private let mapSearchManager = RegisterLocateSettingView() // 지오코딩 담당
+    private let mapSearchManager = RegisterLocateSettingView()
     private let locationnManager = MapCurrentLocation()
     // 마커 색상
     private let markerGray = Color9CA3AF  // 배터리 부족
@@ -28,17 +27,48 @@ final class MapViewController: UIViewController, MapViewDelegate {
         super.viewDidLoad()
         title = "지도"
         
-        mapMainView.delegate = self
-        
+      mapMainView.delegate = self
+      
         setupSearchAction()
         onCoordinateFound()
         setupLocationManager()
         loadRegisterScooters()
+        
+        // 알림수신 블럭!! 이거 있어야 대여하기 누를 때 바로 반영됨
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ridingStatusChanged),
+            name: .ridingStatusChanged,
+            object: nil
+        )
+
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateReturnCardVisibility()
+    }
+    
+    @objc private func ridingStatusChanged() {
+        updateReturnCardVisibility()
+    }
+
+    // 반납버튼(파란색스택) 표시여부 업데이트하는 함수
+    // 대여중이면 표시하고, 대여중아니면 숨긴다.
+    private func updateReturnCardVisibility() {
+        let defaults = UserDefaults.standard
+        if let userID = defaults.string(forKey: "loggedInUserID") {
+            let isRidingNow = defaults.bool(forKey: "isRidingNow_\(userID)")
+            mapMainView.returnContainerView.isHidden = !isRidingNow
+        }
+    }
+ 
+    
+    // 현재 이용 상태를 읽어서 반납카드 표시여부 업데이트함
     private func setupSearchAction() {
         mapMainView.mapSearchTextField.addTarget(self, action: #selector(mapLocationSearch), for: .editingDidEndOnExit)
     }
+    
     // 장소 검색 -> 위치 -> 위도, 경도로 변환
     @objc private func mapLocationSearch() {
         guard let query = mapMainView.mapSearchTextField.text, !query.isEmpty else { return }

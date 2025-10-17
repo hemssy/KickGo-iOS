@@ -4,7 +4,6 @@ import UIKit
 import SnapKit
 
 class RegisterView: UIView {
-    
     //상단 숫자
     let numsLabel: UILabel = {
         let label = UILabel()
@@ -196,15 +195,12 @@ class RegisterView: UIView {
     
     //bottomContainerView 하위 요소 오토레이아웃 설정
     func bottomContainerSetUpLayout() {
-        
         // 다음 버튼
         nextButton.snp.makeConstraints {
             $0.height.equalTo(60)
             $0.centerY.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.trailing.equalToSuperview().inset(20)
-            
-            
         }
     }
     
@@ -219,7 +215,7 @@ class RegisterView: UIView {
         nextButton.isEnabled = false
         nextButton.backgroundColor = ColorE5E7EB
     }
-    
+    //delegate로 상태 전달
     @objc func textFieldsChanged() {
         let batteryText = batteryTextField.text ?? ""
         // 세 칸 모두 입력되어야 활성화
@@ -279,4 +275,6 @@ class RegisterView: UIView {
             }
         }
     }
+    
+
 }
