@@ -15,10 +15,15 @@ class MapViewController: UIViewController, MapViewDelegate {
     private let markerManager = MapMarkerManager()
     private let mapSearchManager = RegisterLocateSettingView()
     private let locationnManager = MapCurrentLocation()
+    
     // 마커 색상
     private let markerGray = Color9CA3AF  // 배터리 부족
     private let markerGreen  = Color10B981  // 대여 가능
     
+    
+    private var timer: Timer? // 타이머
+    private var totalSeconds = 0 //토탈 초
+
     override func loadView() {
         view = mapMainView
     }
@@ -51,7 +56,19 @@ class MapViewController: UIViewController, MapViewDelegate {
     
     @objc private func ridingStatusChanged() {
         updateReturnCardVisibility()
+        
+        let defaults = UserDefaults.standard
+        if let userID = defaults.string(forKey: "loggedInUserID") {
+            let isRidingNow = defaults.bool(forKey: "isRidingNow_\(userID)")
+            
+            if isRidingNow {
+                startRideTimer()
+            } else {
+                stopRideTimer()
+            }
+        }
     }
+
 
     // 반납버튼(파란색스택) 표시여부 업데이트하는 함수
     // 대여중이면 표시하고, 대여중아니면 숨긴다.
@@ -162,6 +179,36 @@ class MapViewController: UIViewController, MapViewDelegate {
             }
         } catch {
             print("킥보드 정보 불러오기 실패")
+        }
+    }
+    
+    // 타이머 로직
+    private func startRideTimer() {
+        totalSeconds = 0
+        timer?.invalidate()
+        updateTimerUI()
+
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            self.totalSeconds += 1
+            self.updateTimerUI()
+        }
+    }
+
+    private func stopRideTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    // 60분 넘어가면 61:12 이런식으로 나오게함 시간:분:초 형태로 바꾸는거는 필요시 수정
+    private func updateTimerUI() {
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        let fee = 500 + (minutes * 100)
+        
+        DispatchQueue.main.async {
+            self.mapMainView.timeLabel.text = String(format: "%d:%02d", minutes, seconds)
+            self.mapMainView.priceLabel.text = "현재 요금: \(fee)원"
         }
     }
 }
