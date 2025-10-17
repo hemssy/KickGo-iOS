@@ -1,6 +1,12 @@
+import Foundation
 import UIKit
 import SnapKit
 import CoreData
+
+// 킥보드 대여할 때 사용자 상태를 이용중으로 바꾸게 알리는 알림
+extension Notification.Name {
+    static let ridingStatusChanged = Notification.Name("ridingStatusChanged")
+}
 
 // 재사용하는 메뉴 행 뷰 클래스
 class MenuRowView: UIControl {
@@ -115,6 +121,15 @@ class MyViewController: UIViewController {
         myScooterRow.addTarget(self, action: #selector(openMyScooters), for: .touchUpInside)
         logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountTapped), for: .touchUpInside)
+        
+        // 사용자가 킥보드 대여했다는 알림 여기로 받음
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(ridingStatusChanged),
+            name: .ridingStatusChanged,
+            object: nil
+        )
+        
     }
     
     // 스크롤뷰
@@ -434,6 +449,16 @@ class MyViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    // 킥보드 이용중/이용중아님 상태 변경 함수
+    @objc private func ridingStatusChanged() {
+        let defaults = UserDefaults.standard
+        if let userID = defaults.string(forKey: "loggedInUserID") {
+            isRidingNow = defaults.bool(forKey: "isRidingNow_\(userID)")
+        }
+
+        updateStatusUI()
+    }
+    
     // viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -451,6 +476,12 @@ class MyViewController: UIViewController {
         // 프로필헤더 UI 업데이트(이름, 이메일)
         nameLabel.text = "\(name)님"
         emailLabel.text = email
+        
+        // 계정별로 이용중 상태 불러오기
+        isRidingNow = defaults.bool(forKey: "isRidingNow_\(userID)")
+
+        // 상태카드 UI 반영
+        updateStatusUI()
     }
 
 
