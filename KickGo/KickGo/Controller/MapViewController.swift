@@ -4,7 +4,7 @@ import NMapsMap
 import CoreLocation
 
 final class MapViewController: UIViewController, MapViewDelegate {
-    
+    // 반납하기 누르면 rentViewController로 넘어가게
     func mapViewDidTapReturnButton(_ mapView: MapView) {
         let rentVC = RentViewController()
         rentVC.modalPresentationStyle = .fullScreen
@@ -137,6 +137,7 @@ final class MapViewController: UIViewController, MapViewDelegate {
 }
 
 extension MapViewController {
+    
     // 마커 누르면 시트 띄우기
     func presentMarkerSheet() {
         let sheetVC = MarkerSheetViewController()
