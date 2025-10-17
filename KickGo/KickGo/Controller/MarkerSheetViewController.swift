@@ -173,11 +173,30 @@ class MarkerSheetViewController: UIViewController {
 // 대여하기 눌렀을 때 코드를 구현하면 코드 길이가 좀 생길 것 같아서 extension으로 따로 빼놨습니다!
 extension MarkerSheetViewController {
     @objc func didTapRentButton() {
-        let alert = UIAlertController(title: nil, message: "해당 킥보드를 대여하시겠습니까?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "취소", style: .default))
-        alert.addAction(UIAlertAction(title: "대여하기", style: .default) { [weak self] _ in
-            print("확인")
+        let alert = UIAlertController(
+            title: nil,
+            message: "해당 킥보드를 대여하시겠습니까?",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        alert.addAction(UIAlertAction(title: "대여하기", style: .default) { _ in
+            let defaults = UserDefaults.standard
+
+            // 현재 로그인한 계정의 아이디 가져오기
+            if let userID = defaults.string(forKey: "loggedInUserID") {
+                // 계정별 상태값(이용중,이용아님) 저장하기
+                defaults.set(true, forKey: "isRidingNow_\(userID)")
+            }
+
+            // 킥보드 대여했다는 알림 전송 -> MyViewController가 받음
+            NotificationCenter.default.post(name: .ridingStatusChanged, object: nil)
+
+            // 마커시트 닫기
+            self.dismiss(animated: true)
         })
+
         present(alert, animated: true)
     }
+
 }
