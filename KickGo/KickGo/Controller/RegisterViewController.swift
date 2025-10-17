@@ -2,10 +2,7 @@ import UIKit
 import SnapKit
 import CoreData
 
-class RegisterViewController: UIViewController,RegisterCheckDelegate{
-
-    
-
+class RegisterViewController: UIViewController,RegisterCheckDelegate,CreateAlert{
     func registerCheckDidTapNext() -> [(title: String, value: String)] {
         return[
             ("모델명", registerView.modelNameTextField.text ?? ""),
@@ -14,8 +11,6 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate{
             ("배치 위치", registerLocationSettingView.searchTextField.text ?? "")
         ]
     }
-    
-    
     let registerView = RegisterView()
     let registerLocationSettingView = RegisterLocateSettingView()
     let registerCheck = RegisterCheck()
@@ -70,34 +65,31 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate{
         registerCheck.finishButton.addTarget(self, action: #selector(saveScooterInfo), for: .touchUpInside)
     }
     
+    //
+    private func showVies(view: UIView){
+        registerView.isHidden = true
+        registerLocationSettingView.isHidden = true
+        registerCheck.isHidden = true
+        
+        view.isHidden = false
+    }
+    
     
     @objc func goNext(){
-        
-        if registerView.isHidden == false{
-            registerView.isHidden = true
-            registerLocationSettingView.isHidden = false
-            registerCheck.isHidden = true
+        if !registerView.isHidden {
+            showVies(view: registerLocationSettingView)
+        } else if !registerLocationSettingView.isHidden{
             registerCheck.reloadData()
-        } else if registerLocationSettingView.isHidden == false{
-            registerView.isHidden = true
-            registerLocationSettingView.isHidden = true
-            registerCheck.isHidden = false
-            registerCheck.reloadData()
-        } else if registerCheck.isHidden == false{
-            //완료 알럿 함수 나타내기
+            showVies(view: registerCheck)
         }
+        
     }
     @objc func goPrev(){
-        if registerLocationSettingView.isHidden == false{
-            registerView.isHidden = false
-            registerLocationSettingView.isHidden = true
-            registerCheck.isHidden = true
-        } else if registerCheck.isHidden == false{
-            registerView.isHidden = true
-            registerLocationSettingView.isHidden = false
-            registerCheck.isHidden = true
+        if !registerLocationSettingView.isHidden {
+            showVies(view: registerView)
+        } else if !registerCheck.isHidden {
+            showVies(view: registerLocationSettingView)
         }
-        
     }
     
     // 킥보드 정보 저장 메서드
@@ -125,7 +117,7 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate{
 
         do {
             try context.save()
-            showAlert(title: "등록 완료", message: "킥보드 정보가 저장되었습니다.")
+            alertShow(title: "등록 완료", message: "킥보드 정보가 저장되었습니다.")
             resetRegistrationForm()
         } catch {
             print("저장 실패: \(error)")
@@ -134,27 +126,33 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate{
     
     // ReigisterView, RegisterLocateSettingView 알람표시
     private func setupViewActions(){
-        registerView.onInvalidBatteryValueEntered = { [weak self] message in
-            self?.showAlert(title: "입력 오류", message: message)
+        /// 비동기 작업 알림 처리
+        /// Controller가 geocodingError의 완료 결과을 받아 직접 알림을 표시하는 구조입니다.
+        registerLocationSettingView.geocodingError = { [weak self] in
+            self?.alertShow(title: "위치 검색 실패", message: RegisterError.searchResultError.message)
         }
-        registerLocationSettingView.geocodingError = { [weak self] message in
-            self?.showAlert(title: "위치 검색 실패", message: message)
-        }
+        registerView.batteryTextField.addTarget(self, action: #selector(battaryChanged), for: .editingChanged)
         
     }
-
-
-
-    // 등록완료 알럿
-    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let completAction = UIAlertAction(title: "확인", style: .default) { (_) in
-            completion?()
+    @objc private func battaryChanged(){
+        guard let batteryText = registerView.batteryTextField.text, !batteryText.isEmpty,
+              let batteryValue = Int(batteryText) else {
+            return
         }
-        alert.addAction(completAction)
-        present(alert, animated: true)
+        // 100을 초과했을 경우
+        if batteryValue > 100 {
+            registerView.batteryTextField.text = "100"
+            alertShow(title: "입력 오류", message: RegisterError.maxBattaryError.message)
+        }
+        
+        // 1 미만일 경우
+        if batteryValue < 1 {
+            // 값을 0으로 강제 변경하고, 에러 메시지를 enum에서 가져와 알림창을 띄웁니다.
+            registerView.batteryTextField.text = "0"
+            alertShow(title: "입력 오류", message: RegisterError.minBattaryError.message)
+        }
     }
+
     //등록 화면 데이터 초기화
     func resetRegistrationForm() {
         
