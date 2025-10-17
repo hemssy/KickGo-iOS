@@ -147,7 +147,7 @@ class MapViewController: UIViewController, MapViewDelegate {
                     let markerColor: UIColor
                     
                     if batteryLevel < 20 {
-                        markerColor = UIColor.systemRed  // hex 설정해놓은거로 사용하니까 red는 색상이 안떠서 systemRed를 사용
+                        markerColor = UIColor.systemRed 
                     } else if batteryLevel < 70 {
                         markerColor = self.markerGray
                     } else {
