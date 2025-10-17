@@ -416,6 +416,10 @@ class MyViewController: UIViewController {
 
             // 로그인화면으로 이동
             let loginVC = LoginViewController()
+            DispatchQueue.main.async {
+                loginVC.IDTextField.text = ""
+                loginVC.PasswordNameTextField.text = ""
+            }
             let nav = UINavigationController(rootViewController: loginVC)
             nav.modalPresentationStyle = .fullScreen
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
