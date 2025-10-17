@@ -17,7 +17,7 @@ class LoginViewController: UIViewController {
         gradientLayer.colors = [firstColor.cgColor, UIColor.white.cgColor]
         return gradientLayer
     }()
-    private let IDTextField: UITextField = {
+    let IDTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
         textField.backgroundColor = .white
@@ -25,7 +25,7 @@ class LoginViewController: UIViewController {
         textField.autocapitalizationType = .none
         return textField
     }()
-    private let PasswordNameTextField: UITextField = {
+    let PasswordNameTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
         textField.backgroundColor = .white
