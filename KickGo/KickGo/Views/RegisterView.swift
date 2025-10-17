@@ -222,7 +222,6 @@ class RegisterView: UIView {
         let filled = !(modelNameTextField.text?.isEmpty ?? true) &&
         !(serialNumberTextField.text?.isEmpty ?? true) &&
         !(batteryText.isEmpty) &&
-        //입력 숫자 체크(1~100)
         checkBatteryTextField()
         
         // 버튼 상태 업데이트
@@ -237,44 +236,20 @@ class RegisterView: UIView {
             nextButton.backgroundColor = ColorE5E7EB
             nextButton.setTitleColor(.darkGray, for: .normal)
         }
-        showBatteryError()
     }
     
-    // 배터리 입력된 숫자 1~100체크
-    // 추후 알림 메세지 Error파일 만들어서 리팩토링하기
-    var onInvalidBatteryValueEntered: ((String) -> Void)?
+    // 배터리 입력된 숫자 1~100가 맞는지 체크
+   
+    
     func checkBatteryTextField() -> Bool {
-        
         guard let batteryText = batteryTextField.text,
               let batteryTextFieldValue = Int(batteryText) else {
-            
             return false
         }
-        
         if batteryTextFieldValue < 1 || batteryTextFieldValue > 100 {
             return false
         }
-        
         return true
     }
     
-    func showBatteryError(){
-        // 비어있는 문자열 체크 및 Int로 변환
-        guard let batteryText = batteryTextField.text, !batteryText.isEmpty,
-              let batteryValue = Int(batteryText) else {
-            return
-        }
-        // 1~100 범위를 벗어났을 경우
-        if batteryValue < 1 || batteryValue > 100 {
-            if batteryValue > 100 {
-                batteryTextField.text = "100"
-                onInvalidBatteryValueEntered?("배터리 잔량은 1~100 사이의 숫자여야 합니다.")
-            } else if batteryValue < 1 {
-                batteryTextField.text = "0"
-                onInvalidBatteryValueEntered?("배터리 잔량은 0보다 커야 합니다.")
-            }
-        }
-    }
-    
-
 }

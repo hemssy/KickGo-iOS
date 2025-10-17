@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		949D0E0A2EA23B0E008B982A /* APIKey.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 949D0E092EA23B0E008B982A /* APIKey.xcconfig */; };
 		FBB1CDF12E9CDF7F007B41DE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = FBB1CDF02E9CDF7F007B41DE /* SnapKit */; };
 		FBB1CE432E9D12B4007B41DE /* NMapsMap in Frameworks */ = {isa = PBXBuildFile; productRef = FBB1CE422E9D12B4007B41DE /* NMapsMap */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		949D0E092EA23B0E008B982A /* APIKey.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = APIKey.xcconfig; sourceTree = "<group>"; };
 		FBB1CDD72E9CDEAB007B41DE /* KickGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KickGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -52,6 +54,7 @@
 		FBB1CDCE2E9CDEAB007B41DE = {
 			isa = PBXGroup;
 			children = (
+				949D0E092EA23B0E008B982A /* APIKey.xcconfig */,
 				FBB1CDD92E9CDEAB007B41DE /* KickGo */,
 				FBB1CDD82E9CDEAB007B41DE /* Products */,
 			);
@@ -135,6 +138,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				949D0E0A2EA23B0E008B982A /* APIKey.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +165,7 @@
 				DEVELOPMENT_TEAM = JDARSK83RW;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KickGo/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -194,6 +199,7 @@
 				DEVELOPMENT_TEAM = JDARSK83RW;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KickGo/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "사용자의 위치를 받습니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -219,6 +225,7 @@
 		};
 		FBB1CDED2E9CDEAC007B41DE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 949D0E092EA23B0E008B982A /* APIKey.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -282,6 +289,7 @@
 		};
 		FBB1CDEE2E9CDEAC007B41DE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 949D0E092EA23B0E008B982A /* APIKey.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

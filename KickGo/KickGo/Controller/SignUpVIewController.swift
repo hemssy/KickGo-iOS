@@ -76,6 +76,7 @@ class SignUpVIewController: UIViewController,CreateAlert {
         signUpButton.addTarget(self, action: #selector(completeSignUp), for: .touchUpInside)
         setupTargets()
         setupUI()
+        setupLayout()
         hideKeyboardWhenTappedAround()
         phoneNumsTextField.addTarget(self, action: #selector (phoneTextFieldDidChange), for: .editingChanged)
         // UserDefault 데이터 경로

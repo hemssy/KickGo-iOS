@@ -266,7 +266,7 @@ class RegisterLocateSettingView: UIView {
     var onCoordinateFound: ((Double, Double) -> Void)?
     
     // Geocoding API 호출 및 지도 이동
-    var geocodingError: ((String) -> Void)?
+    var geocodingError: (() -> Void)?
     func geocode(query: String) {
         guard let encodeQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: "https://maps.apigw.ntruss.com/map-geocode/v2/geocode?query=\(encodeQuery)") else { return }
@@ -274,8 +274,8 @@ class RegisterLocateSettingView: UIView {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         // 나중에 키값 보안을 위한 리팩토링 진행해야함
-        request.addValue("oj5l1oliar", forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
-        request.addValue("wndlYwoXCHG0cV6r465Jy502IN1rQZV2hslxhwMm", forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+        request.addValue(APIKeyID, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.addValue(APIKey, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
@@ -302,7 +302,7 @@ class RegisterLocateSettingView: UIView {
             } catch {
                 //위치 검색 실패시
                 DispatchQueue.main.async {
-                    self?.geocodingError?("검색 결과를 찾을 수 없습니다.")
+                    self?.geocodingError?()
                     //nextButton 비활성화
                     self?.isLocated = false
                     self?.nextButtonState()

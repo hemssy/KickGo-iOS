@@ -1,0 +1,13 @@
+//
+//  APIKey.xcconfig
+//  KickGo
+//
+//  Created by oww on 10/17/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// 이 파일을 복사하여 APIKey.xcconfig 파일을 만들어주세요.
+APIKEYID = oj5l1oliar
+APIKEY = wndlYwoXCHG0cV6r465Jy502IN1rQZV2hslxhwMm
