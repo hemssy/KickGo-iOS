@@ -115,7 +115,10 @@ class MyViewController: UIViewController {
         myScooterRow.addTarget(self, action: #selector(openMyScooters), for: .touchUpInside)
         logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
         deleteAccountButton.addTarget(self, action: #selector(deleteAccountTapped), for: .touchUpInside)
+        
+        
     }
+
     
     // 스크롤뷰
     private func setupScrollView() {
@@ -451,6 +454,8 @@ class MyViewController: UIViewController {
         // 프로필헤더 UI 업데이트(이름, 이메일)
         nameLabel.text = "\(name)님"
         emailLabel.text = email
+        
+        
     }
 
 

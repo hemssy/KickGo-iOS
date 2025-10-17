@@ -2,12 +2,15 @@ import UIKit
 import SnapKit
 import CoreData
 
-class RegisterViewController: UIViewController,RegisterCheckDelegate {
+class RegisterViewController: UIViewController,RegisterCheckDelegate{
+
+    
+
     func registerCheckDidTapNext() -> [(title: String, value: String)] {
         return[
             ("모델명", registerView.modelNameTextField.text ?? ""),
             ("시리얼 번호", registerView.serialNumberTextField.text ?? ""),
-            ("배터리", registerView.batteryTextField.text ?? ""),
+            ("배터리", registerView.batteryTextField.text.map { "\($0) %" } ?? ""),
             ("배치 위치", registerLocationSettingView.searchTextField.text ?? "")
         ]
     }
@@ -28,6 +31,7 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate {
         buttonTapped()
         setupViewActions()
     }
+    
     // 초기 뷰 셋팅
     func settingView() {
         registerView.isHidden = false
@@ -152,7 +156,7 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate {
         present(alert, animated: true)
     }
     //등록 화면 데이터 초기화
-    private func resetRegistrationForm() {
+    func resetRegistrationForm() {
         
         registerView.modelNameTextField.text = nil
         registerView.serialNumberTextField.text = nil

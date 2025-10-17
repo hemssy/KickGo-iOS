@@ -21,12 +21,13 @@ final class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "지도"
-        
+
         setupSearchAction()
         onCoordinateFound()
         setupLocationManager()
         loadRegisterScooters()
     }
+ 
     
     private func setupSearchAction() {
         mapMainView.mapSearchTextField.addTarget(self, action: #selector(mapLocationSearch), for: .editingDidEndOnExit)
