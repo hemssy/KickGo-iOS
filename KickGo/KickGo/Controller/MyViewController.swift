@@ -434,7 +434,7 @@ class MyViewController: UIViewController {
             let loginVC = LoginViewController()
             DispatchQueue.main.async {
                 loginVC.IDTextField.text = ""
-                loginVC.PasswordNameTextField.text = ""
+                loginVC.PasswordTextField.text = ""
             }
             let nav = UINavigationController(rootViewController: loginVC)
             nav.modalPresentationStyle = .fullScreen

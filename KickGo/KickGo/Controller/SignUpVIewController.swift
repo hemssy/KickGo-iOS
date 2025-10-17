@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class SignUpVIewController: UIViewController {
+class SignUpVIewController: UIViewController,CreateAlert {
     let defaults = UserDefaults.standard
     
     private let nameLabel: UILabel = {
@@ -83,57 +83,51 @@ class SignUpVIewController: UIViewController {
             print("UserDefaults 경로: \(libraryDirectory.path)/Preferences")
         }
     }
-    
+    //view에 추가하는 역할과 Auto Layout 제약조건을 설정하는 역할 함수 구분
     func setupUI(){
-        view.addSubview(nameLabel)
+        [nameLabel,nameTextField,emailLabel,emailLabelTextField,phoneNumsLabel,phoneNumsTextField,passwordLabel,passwordLabelTextField,signUpButton].forEach{view.addSubview($0)}
+    }
+    private func setupLayout(){
         nameLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(24)
             make.centerX.equalTo(view)
         }
-        view.addSubview(nameTextField)
         nameTextField.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(nameLabel)
             make.width.equalTo(300)
             make.height.equalTo(50)
         }
-        view.addSubview(emailLabel)
         emailLabel.snp.makeConstraints { make in
             make.top.equalTo(nameTextField.snp.bottom).offset(24)
             make.leading.trailing.equalTo(nameLabel)
         }
-        view.addSubview(emailLabelTextField)
         emailLabelTextField.snp.makeConstraints { make in
             make.top.equalTo(emailLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(nameLabel)
             make.width.equalTo(300)
             make.height.equalTo(50)
         }
-        view.addSubview(phoneNumsLabel)
         phoneNumsLabel.snp.makeConstraints { make in
             make.top.equalTo(emailLabelTextField.snp.bottom).offset(24)
             make.leading.trailing.equalTo(nameLabel)
         }
-        view.addSubview(phoneNumsTextField)
         phoneNumsTextField.snp.makeConstraints { make in
             make.top.equalTo(phoneNumsLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(nameLabel)
             make.width.equalTo(300)
             make.height.equalTo(50)
         }
-        view.addSubview(passwordLabel)
         passwordLabel.snp.makeConstraints { make in
             make.top.equalTo(phoneNumsTextField.snp.bottom).offset(24)
             make.leading.trailing.equalTo(nameLabel)
         }
-        view.addSubview(passwordLabelTextField)
         passwordLabelTextField.snp.makeConstraints { make in
             make.top.equalTo(passwordLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(nameLabel)
             make.width.equalTo(300)
             make.height.equalTo(50)
         }
-        view.addSubview(signUpButton)
         signUpButton.snp.makeConstraints { make in
             make.top.equalTo(passwordLabelTextField.snp.bottom).offset(48)
             make.leading.trailing.equalTo(nameLabel)
@@ -143,34 +137,41 @@ class SignUpVIewController: UIViewController {
     }
     
     @objc private func completeSignUp() {
-        let loginVC = LoginViewController()
-    
-        guard let name = nameTextField.text,
-              let id = emailLabelTextField.text,
-              let phoneNums = phoneNumsTextField.text,
-              let password = passwordLabelTextField.text else {
+        do{
+            let loginVC = LoginViewController()
             
-            return
+            guard let name = nameTextField.text,
+                  let id = emailLabelTextField.text,
+                  let phoneNums = phoneNumsTextField.text,
+                  let password = passwordLabelTextField.text else {
+                //모든 항목을 입력해주세요.
+                throw SignUpError.emptyField
+            }
+            guard id.isValidEmail else {
+                throw SignUpError.inValidEmail
+            }
+            guard phoneNums.isValidPhoneNumber else {
+                throw SignUpError.inValidPhoneNums
+            }
+            
+            // 데이터 수집
+            let userDictionary: [String : Any] = [
+                "name": name,
+                "id": id,
+                "phoneNums": phoneNums,
+                "password": password
+            ]
+            defaults.set(userDictionary, forKey: id)
+            navigationController?.pushViewController(loginVC, animated: true)
+        } catch{
+            if let signUpError = error as? SignUpError{
+                alertShow(title: "회원가입 오류", message: signUpError.message)
+            } else {
+                alertShow(title: "회원가입 오류", message: "오류 발생")
+            }
         }
-        guard id.isValidEmail else {
-            showAlert(title: "회원가입 오류", message: "유효하지 않은 이메일입니다.")
-            return
-        }
-        guard phoneNums.isValidPhoneNumber else {
-            showAlert(title: "회원가입 오류", message: "유효하지 않은 전화번호입니다.")
-            return
-        }
-        // 데이터 수집
-        let userDictionary: [String : Any] = [
-            "name": name,
-            "id": id,
-            "phoneNums": phoneNums,
-            "password": password
-        ]
-        defaults.set(userDictionary, forKey: id)
-        navigationController?.pushViewController(loginVC, animated: true)
-        
     }
+    
     // 입력값 감시 및 다음버튼 활성화 제어
     private func setupTargets() {
         // 3개 텍스트필드의 입력 변화를 감지
@@ -191,9 +192,7 @@ class SignUpVIewController: UIViewController {
         !(passwordLabelTextField.text?.isEmpty ?? true)
         // 버튼 상태 업데이트
         signUpButton.isEnabled = filled
-        
-        
-        
+
         if filled {
             // 활성화 상태(정보를 다 입력했을 때)
             signUpButton.backgroundColor = Color2563EB
@@ -203,16 +202,6 @@ class SignUpVIewController: UIViewController {
             signUpButton.backgroundColor = ColorE5E7EB
             signUpButton.setTitleColor(.darkGray, for: .normal)
         }
-    }
-    
-    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let completAction = UIAlertAction(title: "확인", style: .default) { (_) in
-            completion?()
-        }
-        alert.addAction(completAction)
-        present(alert, animated: true)
     }
     
     @objc private func phoneTextFieldDidChange(_ textField: UITextField) {
