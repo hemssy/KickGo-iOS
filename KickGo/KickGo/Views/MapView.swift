@@ -2,12 +2,17 @@ import UIKit
 import SnapKit
 import NMapsMap
 
+protocol MapViewDelegate: AnyObject {
+    func mapViewDidTapReturnButton(_ mapView: MapView)
+}
+
 class MapView: UIView {
     
     let mapView = NMFNaverMapView()
     let mapSearchTextField = UITextField()
     let mapSearchImageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
     private let iconContainer = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 24))
+    weak var delegate: MapViewDelegate?
     
     // 반납 카드
     let returnContainerView = UIView()
@@ -120,8 +125,6 @@ class MapView: UIView {
     
     // 반납하기 눌렀을 때
     @objc func didTapReturnButton() {
-        print("반납하기")
-        // 반납하기 창으로 넘어가는 동시에 반납하기 버튼 사라짐 (반납하기 창은 구현 할 예정입니다)
-        returnContainerView.isHidden = true
+        delegate?.mapViewDidTapReturnButton(self)
     }
 }

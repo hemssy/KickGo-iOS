@@ -3,13 +3,19 @@ import CoreData
 import NMapsMap
 import CoreLocation
 
-final class MapViewController: UIViewController {
+final class MapViewController: UIViewController, MapViewDelegate {
+    
+    func mapViewDidTapReturnButton(_ mapView: MapView) {
+        let rentVC = RentViewController()
+        rentVC.modalPresentationStyle = .fullScreen
+        self.present(rentVC, animated: true, completion: nil)
+    }
+    
     
     private let mapMainView = MapView()
     private let markerManager = MapMarkerManager()
     private let mapSearchManager = RegisterLocateSettingView() // 지오코딩 담당
     private let locationnManager = MapCurrentLocation()
-    
     // 마커 색상
     private let markerGray = Color9CA3AF  // 배터리 부족
     private let markerGreen  = Color10B981  // 대여 가능
@@ -21,6 +27,8 @@ final class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "지도"
+        
+        mapMainView.delegate = self
         
         setupSearchAction()
         onCoordinateFound()
