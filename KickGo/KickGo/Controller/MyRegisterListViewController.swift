@@ -13,6 +13,9 @@ class MyRegisterListViewController: UIViewController, UITableViewDataSource {
         hideKeyboardWhenTappedAround()
         setupTableView()
         fetchScooters()
+        
+        
+        
     }
 
     private func setupTableView() {

@@ -21,7 +21,7 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "지도"
-        
+
         setupSearchAction()
         onCoordinateFound()
         setupLocationManager()
@@ -55,6 +55,7 @@ class MapViewController: UIViewController {
             mapMainView.returnContainerView.isHidden = !isRidingNow
         }
     }
+ 
     
     // 현재 이용 상태를 읽어서 반납카드 표시여부 업데이트함
     private func setupSearchAction() {

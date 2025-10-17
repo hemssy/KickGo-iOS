@@ -131,6 +131,7 @@ class MyViewController: UIViewController {
         )
         
     }
+
     
     // 스크롤뷰
     private func setupScrollView() {

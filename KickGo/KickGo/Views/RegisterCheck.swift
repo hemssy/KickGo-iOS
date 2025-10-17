@@ -9,7 +9,7 @@ protocol RegisterCheckDelegate: AnyObject {
 
 class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return infoDummyData.count
+        return infoDatas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -17,13 +17,13 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        let item = infoDummyData[indexPath.row]
+        let item = infoDatas[indexPath.row]
         cell.configure(title: item.title, value: item.value)
         return cell
     }
     
     weak var delegate: RegisterCheckDelegate?
-    var infoDummyData: [(title: String, value: String)] = []
+    var infoDatas: [(title: String, value: String)] = []
     
     //상단 숫자
     let numsLabel: UILabel = {
@@ -217,7 +217,7 @@ class RegisterCheck: UIView, UITableViewDelegate, UITableViewDataSource {
     }
     
     func reloadData(){
-        self.infoDummyData = delegate?.registerCheckDidTapNext() ?? []
+        self.infoDatas = delegate?.registerCheckDidTapNext() ?? []
         self.infoTableView.reloadData()
     }
 }
