@@ -15,6 +15,8 @@ class MarkerSheetViewController: UIViewController {
     
     private let closeButton = UIButton(type: .system)
     
+    var scooter: ScooterEntity?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
@@ -33,7 +35,7 @@ class MarkerSheetViewController: UIViewController {
         
         
         // 킥보드 이름
-        titleLabel.text = "KickGo Pro"
+        titleLabel.text = scooter?.modelName ?? "KickGo Pro"
         titleLabel.font = .systemFont(ofSize: 20, weight: .bold)
         
         // 상태
@@ -42,7 +44,8 @@ class MarkerSheetViewController: UIViewController {
         statusLabel.textColor = UIColor(red: 5/255, green: 150/255, blue: 105/255, alpha: 1)
         
         // 정보 3개 (배터리, 거리, 요금)
-        let battery = makeItem(iconName: "battery.100", iconColor: .systemGreen, valueText: "85%", titleText: "배터리")
+        let batteryPercent = scooter?.battery ?? 100
+        let battery = makeItem(iconName: "battery.100", iconColor: .systemGreen, valueText: "\(batteryPercent)%", titleText: "배터리")
         let distance = makeItem(iconName: "mappin.and.ellipse", iconColor: .systemBlue, valueText: "50m", titleText: "거리")
         let price = makeItem(iconName: "dollarsign.circle", iconColor: .systemOrange, valueText: "100원", titleText: "분당 요금")
         

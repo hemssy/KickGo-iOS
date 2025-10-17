@@ -150,11 +150,20 @@ class MapViewController: UIViewController, MapViewDelegate {
                     // 마커 추가 작업은 메인 스레드에서
                     DispatchQueue.main.async {
                         self.markerManager.addMarker(
-                            to: self.mapMainView.mapView.mapView ?? NMFMapView(),
+                            to: self.mapMainView.mapView.mapView,
+                            scooter: s,
                             lat: coordinate.latitude,
                             lng: coordinate.longitude,
-                            color: markerColor) {
-                                self.presentMarkerSheet()
+                            color: markerColor) { ScooterEntity in
+                                // 정보 받은 토대로 시트 띄우기
+                                let sheet = MarkerSheetViewController()
+                                sheet.modalPresentationStyle = .pageSheet
+                                sheet.scooter = ScooterEntity
+                                
+                                if let sheetController = sheet.sheetPresentationController {
+                                    sheetController.detents = [.medium()]  // 시트는 중간 높이까지만
+                                }
+                                self.present(sheet, animated: true)
                             }
                     }
                 }
