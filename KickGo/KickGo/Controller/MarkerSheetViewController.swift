@@ -1,6 +1,10 @@
 import UIKit
 import SnapKit
 
+protocol MarkerSheetDelegate: AnyObject {
+    func didRentScooter(_ scooter: ScooterEntity)
+}
+
 class MarkerSheetViewController: UIViewController {
     
     private let iconView = UIImageView(image: UIImage(systemName: "bicycle"))
@@ -16,6 +20,7 @@ class MarkerSheetViewController: UIViewController {
     private let closeButton = UIButton(type: .system)
     
     var scooter: ScooterEntity?
+    weak var delegate: MarkerSheetDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -184,6 +189,7 @@ extension MarkerSheetViewController {
 
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
         alert.addAction(UIAlertAction(title: "대여하기", style: .default) { _ in
+            guard let scooter = self.scooter else { return }
             let defaults = UserDefaults.standard
 
             // 현재 로그인한 계정의 아이디 가져오기
@@ -195,6 +201,8 @@ extension MarkerSheetViewController {
             // 킥보드 대여했다는 알림 전송 -> MyViewController가 받음
             NotificationCenter.default.post(name: .ridingStatusChanged, object: nil)
 
+            // 마커 제거 요청
+            self.delegate?.didRentScooter(scooter)
             // 마커시트 닫기
             self.dismiss(animated: true)
         })
