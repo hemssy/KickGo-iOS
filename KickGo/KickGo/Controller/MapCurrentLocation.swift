@@ -11,9 +11,11 @@ class MapCurrentLocation: NSObject, CLLocationManagerDelegate {
     override init() {
         super.init()
         locationManager.delegate = self
+    }
+    
+    func requestAuthorization() {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest  // 거리 정확도 설정
         locationManager.requestWhenInUseAuthorization()  // 위치 서비스 권한 허용하는지 Alert 띄우기
-
     }
     
     // 사용하가 위치 허용/거부를 선택 or 설정에서 권한 변경 -> iOS가 자동으로 실행해주는 콜백
@@ -42,7 +44,12 @@ class MapCurrentLocation: NSObject, CLLocationManagerDelegate {
         let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: lat, lng: lng))
         cameraUpdate.animation = .fly
         cameraUpdate.animationDuration = 1.0
+        mapView?.moveCamera(cameraUpdate)
         
+        // 파란색 마커 표시
+        let locationOverlay = mapView?.locationOverlay
+        locationOverlay?.location = NMGLatLng(lat: lat, lng: lng)
+        mapView?.positionMode = .direction
     }
     
     
