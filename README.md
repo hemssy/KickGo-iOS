@@ -28,6 +28,18 @@
 ## 📱구동화면
 
 
+<div align="center">
+    
+|`스플래시 화면`|`회원가입`|`로그인`|`킥보드 등록 -> 내가 등록한 킥보드 확인`|
+|-------|-------|-------|-------|
+|<img src="https://github.com/user-attachments/assets/0db8dd93-4fcf-4a99-bd18-77724970a0dc" width="143" height="300">|<img src="https://github.com/user-attachments/assets/f4915012-afd3-4652-a0a0-8dd33f2b5db4" width="143" height="300">|<img src="https://github.com/user-attachments/assets/70e0a126-7a92-4cfd-a9cf-a5d498850be4" width="143" height="300">|<img src="https://github.com/user-attachments/assets/ba83caa9-d636-4b83-a248-2cb04ce3bae8" width="143" height="300">|<img src="https://github.com/user-attachments/assets/9e060093-49dc-4588-a148-da4a06d81518" width="143" height="300">|
+
+
+|`지도에서 등록한 킥보드 마커로 표시`|`킥보드 대여하기 -> 대여중`|`킥보드 반납하기 -> 이용내역 확인`|`로그아웃, 회원탈퇴`|
+|-------|-------|-------|-------|
+|<img src="" width="143" height="300">|<img src="https://github.com/user-attachments/assets/9c41ca2f-b5be-4547-b06f-17025fadc274" width="143" height="300">|<img src="" width="143" height="300">|<img src="https://github.com/user-attachments/assets/3667ef75-e927-4174-8196-f868a1fbeabd" width="143" height="300">|<img src="https://github.com/user-attachments/assets/9429471c-ccc0-4c05-83aa-d91c46c020e7" width="143" height="300">|
+
+</div>
 
 ---
 
