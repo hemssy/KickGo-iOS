@@ -297,6 +297,8 @@ class RegisterLocateSettingView: UIView {
                         //nextButton 활성화
                         self?.isLocated = true
                         self?.nextButtonState()
+                        // mapVC의 moveCamera 실행시킴!
+                        self?.onCoordinateFound?(lat, lng)
                     }
                 }
             } catch {
