@@ -6,6 +6,8 @@
 	<string>$(APIKEY)</string>
 	<key>APIKEYID</key>
 	<string>$(APIKEYID)</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>현재 사용자의 위치를 받아 지도에 표시합니다.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

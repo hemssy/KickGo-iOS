@@ -60,6 +60,12 @@ class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate 
         updateReturnCardVisibility()
     }
     
+    // 로그인 후 홈 화면으로 갔을 때 '위치 서비스 권한 허용 Aelrt' 띄우기
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        locationnManager.requestAuthorization()
+    }
+    
     @objc private func ridingStatusChanged() {
         updateReturnCardVisibility()
         
