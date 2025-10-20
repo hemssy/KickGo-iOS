@@ -53,7 +53,7 @@ class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate 
             object: nil
         )
         
-        //
+        // 이거 있어야 킥보드 등록과 동시에 지도에 마커 표시가 됨!!
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleNewScooter),
