@@ -134,11 +134,62 @@ class RentViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @objc func didTapComplete() {
-        let alert = UIAlertController(title: nil, message: "킥보드가 성공적으로 반납되었습니다.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { [weak self] _ in
-            self?.dismiss(animated: true)
+        let defaults = UserDefaults.standard
+        
+        guard let userEmail = defaults.string(forKey: "loggedInUserID"),
+              let startTime = defaults.object(forKey: "rentalStartTime") as? Date,
+              let scooterModel = defaults.string(forKey: "rentedScooterModel") else {
+            print("""
+            필요한 데이터가 없습니다.
+            loggedInUserID: \(defaults.string(forKey: "loggedInUserID") ?? "nil")
+            rentalStartTime: \(String(describing: defaults.object(forKey: "rentalStartTime")))
+            rentedScooterModel: \(defaults.string(forKey: "rentedScooterModel") ?? "nil")
+            """)
+            return
+        }
+
+        // 이용 종료 시각
+        let endTime = Date()
+        // 총 이용 시간(분 단위임)
+        let duration = endTime.timeIntervalSince(startTime) / 60
+        // 요금 계산 (기본요금 500 + 분당 100원)
+        let payment = Int32(500 + Int(duration) * 100)
+        
+        // 코어데이터 저장
+        let ctx = CoreDataStack.context
+        let record = RentalScooterEntity(context: ctx)
+        record.id = UUID()
+        record.userEmail = userEmail
+        record.scooterModel = scooterModel
+        record.startTime = startTime
+        record.endTime = endTime
+        record.duration = duration
+        record.payment = payment
+
+        do {
+            try ctx.save()
+            print("반납 내역 코어데이터 저장 완료")
+        } catch {
+            print("코어데이터 저장 실패: \(error.localizedDescription)")
+        }
+
+        // 상태 초기화
+        defaults.removeObject(forKey: "rentalStartTime")
+        defaults.removeObject(forKey: "rentedScooterModel")
+        defaults.set(false, forKey: "isRidingNow_\(userEmail)")
+        NotificationCenter.default.post(name: .ridingStatusChanged, object: nil)
+
+        // 완료 알럿
+        let alert = UIAlertController(
+            title: "반납 완료",
+            message: "이용 내역이 저장되었습니다.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+            self.dismiss(animated: true)
         })
         present(alert, animated: true)
     }
+
 }
 

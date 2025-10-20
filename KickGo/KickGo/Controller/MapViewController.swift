@@ -209,7 +209,6 @@ class MapViewController: UIViewController, MapViewDelegate {
         timer = nil
     }
     
-    // 60분 넘어가면 61:12 이런식으로 나오게함 시간:분:초 형태로 바꾸는거는 필요시 수정
     private func updateTimerUI() {
         let minutes = totalSeconds / 60
         let seconds = totalSeconds % 60
@@ -219,6 +218,22 @@ class MapViewController: UIViewController, MapViewDelegate {
             self.mapMainView.timeLabel.text = String(format: "%d:%02d", minutes, seconds)
             self.mapMainView.priceLabel.text = "현재 요금: \(fee)원"
         }
+    }
+    
+    // 대여 시작 로직 (유저디폴트 임시 저장)
+    func startRide(for scooterModel: String) {
+        let defaults = UserDefaults.standard
+        defaults.set(Date(), forKey: "rentalStartTime")              // 대여 시작 시간
+        defaults.set(scooterModel, forKey: "rentedScooterModel")     // 킥보드 모델명
+        defaults.synchronize()
+        
+        // 대여 상태 true
+        if let userID = defaults.string(forKey: "loggedInUserID") {
+            defaults.set(true, forKey: "isRidingNow_\(userID)")
+        }
+
+        NotificationCenter.default.post(name: .ridingStatusChanged, object: nil)
+        print("대여 시작 정보 저장 완료 (\(scooterModel))")
     }
 }
 

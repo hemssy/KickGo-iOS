@@ -4,8 +4,8 @@ import SnapKit
 final class SplashViewController: UIViewController {
 
     private let logoBgView = UIView()
-    private let logoImageView = UIImageView(image: UIImage(systemName: "bicycle")) // 임시 아이콘
-    private let appNameImageView = UIImageView(image: UIImage(named: "kickgo_logo_text")) // 어셋에 넣은 텍스트 로고
+    private let logoImageView = UIImageView(image: UIImage(systemName: "bicycle"))
+    private let appNameImageView = UIImageView(image: UIImage(named: "kickgo_logo_text"))
     private let subtitleLabel = UILabel()
 
     override func viewDidLoad() {
@@ -64,8 +64,6 @@ final class SplashViewController: UIViewController {
             let mainVC = LoginViewController()
             let nav = UINavigationController(rootViewController: mainVC)
             
-            //let mainVC = MainViewController()
-            //let nav = UINavigationController(rootViewController: mainVC)
             nav.modalTransitionStyle = .crossDissolve
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true)

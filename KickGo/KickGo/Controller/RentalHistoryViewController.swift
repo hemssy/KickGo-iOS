@@ -14,7 +14,7 @@ class RentalHistoryViewController: UIViewController {
         view.backgroundColor = .systemBackground
 
         setupTableView()     // 테이블뷰 만들기 (넣을 자리)
-        setupDummyData()     // 임시 더미데이터 (넣는 내용)
+        fetchRentalHistory() // 더미데이터 자리에 이용내역 실제데이터 가져옴
     }
 
     // 테이블뷰 셋업
@@ -27,31 +27,31 @@ class RentalHistoryViewController: UIViewController {
         tableView.frame = view.bounds
     }
 
-    // 더미데이터(나중에 삭제할예정!! 이 부분 코드는 무시해도 괜찮습니다..)
-    private func setupDummyData() {
+    private func fetchRentalHistory() {
         let ctx = CoreDataStack.context
+        let request: NSFetchRequest<RentalScooterEntity> = RentalScooterEntity.fetchRequest()
+        
+        // 로그인된 사용자 이메일 가져오기
+        let defaults = UserDefaults.standard
+        guard let userEmail = defaults.string(forKey: "loggedInUserID") else {
+            print("로그인 정보 없음 (UserDefaults에 loggedInUserID 없음)")
+            return
+        }
 
-        let dummy1 = RentalScooterEntity(context: ctx)
-        dummy1.id = UUID()
-        dummy1.userEmail = "kickgo@example.com"
-        dummy1.scooterModel = "킥고 라이트"
-        dummy1.startTime = Date().addingTimeInterval(-3600)
-        dummy1.endTime = Date()
-        dummy1.duration = 30
-        dummy1.payment = 2500
-
-        let dummy2 = RentalScooterEntity(context: ctx)
-        dummy2.id = UUID()
-        dummy2.userEmail = "kickgo@example.com"
-        dummy2.scooterModel = "킥고 맥스"
-        dummy2.startTime = Date().addingTimeInterval(-7200)
-        dummy2.endTime = Date().addingTimeInterval(-6900)
-        dummy2.duration = 5
-        dummy2.payment = 700
-
-        try? ctx.save()
-        rentals = [dummy1, dummy2]
+        // 계정별 필터링 (로그인한 사용자만)
+        request.predicate = NSPredicate(format: "userEmail == %@", userEmail)
+        
+        do {
+            rentals = try ctx.fetch(request)
+            tableView.reloadData()
+            print("\(userEmail) 이용 내역 불러오기 성공 (\(rentals.count)건)")
+        } catch {
+            print("이용 내역 불러오기 실패: \(error.localizedDescription)")
+        }
     }
+
+
+
 }
 
 // 테이블뷰 데이터소스
