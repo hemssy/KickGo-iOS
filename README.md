@@ -2,6 +2,7 @@
 
 ## 프로젝트 소개
 
+<img width="4078" height="2312" alt="표지이미지" src="https://github.com/user-attachments/assets/c0afa04b-4a7a-4877-a23c-c1571b8104f9" />
 
 <br>
 
