@@ -1,6 +1,4 @@
-
-
-    //GeocodingResponse
+    // GeocodingResponse
     struct GeocodingResponse: Codable {
         let status: String
         let meta: Meta
@@ -14,7 +12,7 @@
         let count: Int
     }
     
-    //주소와 좌표 정보
+    // 주소와 좌표 정보
     struct Address: Codable {
         let roadAddress: String
         let jibunAddress: String

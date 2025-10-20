@@ -1,4 +1,3 @@
-
 //  로그인 에러 타입
 enum LoginError: Error{
     case emptyField

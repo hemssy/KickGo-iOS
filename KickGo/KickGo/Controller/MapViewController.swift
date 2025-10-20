@@ -67,7 +67,7 @@ class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate 
         updateReturnCardVisibility()
     }
     
-    // 로그인 후 홈 화면으로 갔을 때 '위치 서비스 권한 허용 Aelrt' 띄우기
+    // 로그인 후 홈 화면으로 갔을 때 '위치 서비스 권한 허용 Alert' 띄우기
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         locationnManager.requestAuthorization()
@@ -251,7 +251,7 @@ class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate 
                                 sheet.delegate = self
                                 
                                 if let sheetController = sheet.sheetPresentationController {
-                                    sheetController.detents = [.medium()]  // 시트는 중간 높이까지만
+                                    sheetController.detents = [.medium()]
                                 }
                                 self.present(sheet, animated: true)
                             }

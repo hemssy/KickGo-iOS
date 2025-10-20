@@ -273,7 +273,7 @@ class RegisterLocateSettingView: UIView {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        // 나중에 키값 보안을 위한 리팩토링 진행해야함
+
         request.addValue(APIKeyID, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
         request.addValue(APIKey, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
