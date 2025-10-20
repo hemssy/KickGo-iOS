@@ -148,7 +148,7 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate,CreateAlert
         // 1 미만일 경우
         if batteryValue < 1 {
             // 값을 0으로 강제 변경하고, 에러 메시지를 enum에서 가져와 알림창을 띄웁니다.
-            registerView.batteryTextField.text = "0"
+            registerView.batteryTextField.text = nil
             alertShow(title: "입력 오류", message: RegisterError.minBattaryError.message)
         }
     }

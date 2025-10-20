@@ -3,7 +3,13 @@ import CoreData
 import NMapsMap
 import CoreLocation
 
-class MapViewController: UIViewController, MapViewDelegate {
+class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate {
+    // delegate 채택
+    func didRentScooter(_ scooter: ScooterEntity) {
+        markerManager.removeMarker(for: scooter)
+        print("마커 제거 완료")
+    }
+    
     // 반납하기 누르면 rentViewController로 넘어가게
     func mapViewDidTapReturnButton(_ mapView: MapView) {
         let rentVC = RentViewController()
@@ -176,6 +182,7 @@ class MapViewController: UIViewController, MapViewDelegate {
                                 let sheet = MarkerSheetViewController()
                                 sheet.modalPresentationStyle = .pageSheet
                                 sheet.scooter = ScooterEntity
+                                sheet.delegate = self
                                 
                                 if let sheetController = sheet.sheetPresentationController {
                                     sheetController.detents = [.medium()]  // 시트는 중간 높이까지만

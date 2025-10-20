@@ -14,7 +14,7 @@ extension String {
     }
     
     var isValidPhoneNumber: Bool {
-        let regExp = "^01[0-1, 7][0-9]{7,8}$"
+        let regExp = "^01[0][0-9]{8}$"
         
         return NSPredicate(format: "SELF MATCHES %@", regExp).evaluate(with: self)
     }
