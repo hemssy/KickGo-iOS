@@ -118,6 +118,7 @@ class RegisterViewController: UIViewController,RegisterCheckDelegate,CreateAlert
         do {
             try context.save()
             alertShow(title: "등록 완료", message: "킥보드 정보가 저장되었습니다.")
+            NotificationCenter.default.post(name: NSNotification.Name("NewScooter"), object: nil, userInfo: ["scooter": scooter])
             resetRegistrationForm()
         } catch {
             print("저장 실패: \(error)")
