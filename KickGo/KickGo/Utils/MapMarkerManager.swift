@@ -1,7 +1,7 @@
 import NMapsMap
 
 class MapMarkerManager {
-    // 킥보드 id별 마커 저장
+    // 킥보드 modelName 별 마커 저장
     private var markers: [String: NMFMarker] = [:]
     
     func addMarker( to mapView: NMFMapView, scooter: ScooterEntity, lat: Double, lng: Double, color: UIColor, onTap: ((ScooterEntity) -> Void)? = nil)
@@ -12,9 +12,9 @@ class MapMarkerManager {
         marker.iconImage = NMFOverlayImage(image: makeMarkerImage(color: color))
         marker.mapView = mapView
         
-        // ID 기준으로 저장
-        if let id = scooter.ownerID {
-            markers[id] = marker
+        // modelName 기준으로 저장
+        if let modelName = scooter.modelName {
+            markers[modelName] = marker
         }
         
         // 마커 눌렀을 때 동작
@@ -49,8 +49,8 @@ class MapMarkerManager {
     
     // 마커 제거
     func removeMarker(for scooter: ScooterEntity) {
-        guard let id = scooter.ownerID, let marker = markers[id] else { return }
+        guard let modelName = scooter.modelName, let marker = markers[modelName] else { return }
         marker.mapView = nil
-        markers.removeValue(forKey: id)
+        markers.removeValue(forKey: modelName)
     }
 }
