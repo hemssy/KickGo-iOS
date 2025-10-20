@@ -48,17 +48,17 @@ class MarkerSheetViewController: UIViewController {
         statusLabel.font = .systemFont(ofSize: 14, weight: .semibold)
         statusLabel.textColor = UIColor(red: 5/255, green: 150/255, blue: 105/255, alpha: 1)
         
-        // 정보 3개 (배터리, 거리, 요금)
+        // 정보 2개 (배터리, 요금)
         let batteryPercent = scooter?.battery ?? 100
         let battery = makeItem(iconName: "battery.100", iconColor: .systemGreen, valueText: "\(batteryPercent)%", titleText: "배터리")
-        let distance = makeItem(iconName: "mappin.and.ellipse", iconColor: .systemBlue, valueText: "50m", titleText: "거리")
+        //let distance = makeItem(iconName: "mappin.and.ellipse", iconColor: .systemBlue, valueText: "50m", titleText: "거리")
         let price = makeItem(iconName: "dollarsign.circle", iconColor: .systemOrange, valueText: "100원", titleText: "분당 요금")
         
         infoStack.axis = .horizontal
         infoStack.alignment = .center
-        infoStack.distribution = .equalSpacing
-        infoStack.spacing = 24
-        [battery, distance, price].forEach { infoStack.addArrangedSubview($0) }
+        infoStack.distribution = .fillEqually
+        infoStack.spacing = 0
+        [battery,  price].forEach { infoStack.addArrangedSubview($0) }
         
         // 이용 안내 영역
         notiContainer.backgroundColor = UIColor(red: 249/255, green: 250/255, blue: 251/255, alpha: 1)
