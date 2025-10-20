@@ -1,7 +1,7 @@
 import UIKit
 import SnapKit
 
-final class SplashViewController: UIViewController {
+class SplashViewController: UIViewController {
 
     private let logoBgView = UIView()
     private let logoImageView = UIImageView(image: UIImage(systemName: "bicycle"))

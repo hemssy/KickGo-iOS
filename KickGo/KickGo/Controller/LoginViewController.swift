@@ -1,4 +1,3 @@
-
 import Foundation
 import UIKit
 import SnapKit
@@ -156,11 +155,6 @@ class LoginViewController: UIViewController, CreateAlert {
         }
     }
     
-    /// 에러 처리 개선 :  do-try-catch 와 커스텀 에러 타입으로 처리
-    /// 예상 질문 : UserDefaults를 사용한 이유
-    /// 장점 : 빠르게 개발 가능함. 별도의 라이브러리 없이 즉시 사용가능
-    /// 단점 : 보안이 매우 취약함.
-    /// 단기간에 빠르게 만들어야 하기 때문에 사용했으며 보안이 약하기 때문에 이후 정보들을 키체인에 저장 하거나 외부 서버를 이용해야한다.
     @objc private func loginButtonTapped() {
         do {
             let mainVC = MainViewController()

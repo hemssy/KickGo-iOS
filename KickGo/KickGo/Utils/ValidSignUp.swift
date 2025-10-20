@@ -1,9 +1,3 @@
-//
-//  ValidEmail.swift
-//  KickGo
-//
-//  Created by oww on 10/16/25.
-//
 import Foundation
 
 extension String {

@@ -1,10 +1,7 @@
-
 import Foundation
 import UIKit
 import SnapKit
 
-/// protocol 채택한 이유
-/// 사용하지 않았다면 RegisterView와 RegisterLocationSettinView에 의존하여 데이터를 가져와야 합니다.
 protocol RegisterCheckDelegate: AnyObject {
     func registerCheckDidTapNext() -> [(title: String, value: String)]
 }
