@@ -1,7 +1,7 @@
 # 킥고-iOS
 
 ## 프로젝트 소개
-
+**킥고**는 킥보드와 고(GO), 그리고 Geo(위치, 지도)의 의미를 담은 이름으로, **사용자의 현재위치를 기반으로 주변 킥보드를 찾아 대여하고 반납할 수 있는 지도형 킥보드 앱**입니다.
 <img width="4078" height="2312" alt="표지이미지" src="https://github.com/user-attachments/assets/c0afa04b-4a7a-4877-a23c-c1571b8104f9" />
 
 <br>
