@@ -178,7 +178,7 @@ class MarkerSheetViewController: UIViewController {
     }
 }
 
-// 대여하기 눌렀을 때 코드를 구현하면 코드 길이가 좀 생길 것 같아서 extension으로 따로 빼놨습니다!
+
 extension MarkerSheetViewController {
     @objc func didTapRentButton() {
         let alert = UIAlertController(
@@ -188,17 +188,33 @@ extension MarkerSheetViewController {
         )
 
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+
         alert.addAction(UIAlertAction(title: "대여하기", style: .default) { _ in
             guard let scooter = self.scooter else { return }
             let defaults = UserDefaults.standard
 
-            // 현재 로그인한 계정의 아이디 가져오기
-            if let userID = defaults.string(forKey: "loggedInUserID") {
-                // 계정별 상태값(이용중,이용아님) 저장하기
-                defaults.set(true, forKey: "isRidingNow_\(userID)")
+            // 로그인한 사용자 확인
+            guard let userID = defaults.string(forKey: "loggedInUserID") else {
+                print("로그인 정보 없음")
+                return
             }
 
-            // 킥보드 대여했다는 알림 전송 -> MyViewController가 받음
+            // 킥보드 모델명 가져오기
+            guard let scooter = self.scooter else {
+                print("scooter 정보 없음")
+                return
+            }
+            let scooterModel = scooter.modelName ?? "모델명 없음"
+
+            // 여기서 바로 유저디폴트에 저장
+            defaults.set(Date(), forKey: "rentalStartTime")
+            defaults.set(scooterModel, forKey: "rentedScooterModel")
+            defaults.set(true, forKey: "isRidingNow_\(userID)")
+            defaults.synchronize()
+
+            print("대여 시작 정보 직접 저장 완료 (모델명: \(scooterModel))")
+
+            // riding 상태 알림 전송
             NotificationCenter.default.post(name: .ridingStatusChanged, object: nil)
 
             // 마커 제거 요청
@@ -209,5 +225,7 @@ extension MarkerSheetViewController {
 
         present(alert, animated: true)
     }
+
+
 
 }
