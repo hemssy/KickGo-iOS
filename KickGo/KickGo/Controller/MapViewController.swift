@@ -52,7 +52,14 @@ class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate 
             name: .ridingStatusChanged,
             object: nil
         )
-
+        
+        //
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleNewScooter),
+            name: NSNotification.Name("NewScooter"),
+            object: nil
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,7 +87,60 @@ class MapViewController: UIViewController, MapViewDelegate, MarkerSheetDelegate 
             }
         }
     }
-
+    
+    @objc private func handleNewScooter(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let scooter = userInfo["scooter"] as? ScooterEntity else { return }
+        
+        guard let position = scooter.position else { return }
+        let batteryLevel = Int(scooter.battery)
+        
+        let geocoder = CLGeocoder()
+        
+        geocoder.geocodeAddressString(position) { [weak self] locationMarks, error in
+            guard let self = self else { return }
+            
+            let markerColor: UIColor
+            if batteryLevel < 20 {
+                markerColor = UIColor.systemRed
+            } else if batteryLevel < 70 {
+                markerColor = self.markerGray
+            } else {
+                markerColor = self.markerGreen
+            }
+            
+            if let error = error {
+                print("새 킥보드 지오코딩 실패 \(position)")
+                return
+            }
+            guard let coordinate = locationMarks?.first?.location?.coordinate else {
+                print("새 킥보드 좌표 변환 실패 \(position)")
+                return
+            }
+            print("새 킥보드 지오코딩 성공! \(position) 위도: \(coordinate.latitude), 경도: \(coordinate.longitude)")
+            
+            // 마커 추가 작업은 메인 스레드에서
+            DispatchQueue.main.async {
+                self.markerManager.addMarker(
+                    to: self.mapMainView.mapView.mapView,
+                    scooter: scooter,
+                    lat: coordinate.latitude,
+                    lng: coordinate.longitude,
+                    color: markerColor) { ScooterEntity in
+                        // 정보 받은 토대로 시트 띄우기
+                        let sheet = MarkerSheetViewController()
+                        sheet.modalPresentationStyle = .pageSheet
+                        sheet.scooter = ScooterEntity
+                        sheet.delegate = self
+                        
+                        if let sheetController = sheet.sheetPresentationController {
+                            sheetController.detents = [.medium()]  // 시트는 중간 높이까지만
+                        }
+                        self.present(sheet, animated: true)
+                    }
+            }
+        }
+    }
 
     // 반납버튼(파란색스택) 표시여부 업데이트하는 함수
     // 대여중이면 표시하고, 대여중아니면 숨긴다.
