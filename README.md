@@ -56,6 +56,12 @@
 
 <br>
 
+---
+
+## [트러블슈팅 확인하기 💬 ](https://github.com/hemssy/KickGo-iOS/wiki/트러블슈팅-🔫)
+
+---
+
 ## 📖 Coding Convention
 
 1. 런타임 크래시를 방지하기 위해 강제 언래핑을 사용하지 않는다.
@@ -221,4 +227,4 @@ gitGraph
 ├── 📦 NMapsGeometry 1.0.2
 └── 📦 NMapsMap 3.23.0
 └── 📦 SnapKit 5.7.1
-
+```
