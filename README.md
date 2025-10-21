@@ -37,7 +37,7 @@
 
 |`지도에서 등록한 킥보드 마커로 표시`|`킥보드 대여하기 -> 대여중`|`킥보드 반납하기 -> 이용내역 확인`|`로그아웃, 회원탈퇴`|
 |-------|-------|-------|-------|
-|<img src="https://github.com/user-attachments/assets/dbbfaf80-7b25-4aab-9ab8-c3957d93173f" width="143" height="300">|<img src="https://github.com/user-attachments/assets/9c41ca2f-b5be-4547-b06f-17025fadc274" width="143" height="300">|<img src="" width="143" height="300">|<img src="https://github.com/user-attachments/assets/efd93830-a57b-4857-9370-d0096ed885c0" width="143" height="300">|
+|<img src="https://github.com/user-attachments/assets/dbbfaf80-7b25-4aab-9ab8-c3957d93173f" width="143" height="300">|<img src="https://github.com/user-attachments/assets/9c41ca2f-b5be-4547-b06f-17025fadc274" width="143" height="300">|<img src="https://github.com/user-attachments/assets/8ebafe35-7c12-4a51-aad2-e71bce3bdc78" width="143" height="300">|<img src="https://github.com/user-attachments/assets/efd93830-a57b-4857-9370-d0096ed885c0" width="143" height="300">|
 
 </div>
 
