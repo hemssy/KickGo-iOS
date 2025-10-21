@@ -32,7 +32,7 @@
     
 |`스플래시 화면`|`회원가입`|`로그인`|`킥보드 등록 -> 내가 등록한 킥보드 확인`|
 |-------|-------|-------|-------|
-|<img src="https://github.com/user-attachments/assets/0db8dd93-4fcf-4a99-bd18-77724970a0dc" width="143" height="300">|<img src="https://github.com/user-attachments/assets/f4915012-afd3-4652-a0a0-8dd33f2b5db4" width="143" height="300">|<img src="https://github.com/user-attachments/assets/70e0a126-7a92-4cfd-a9cf-a5d498850be4" width="143" height="300">|<img src="" width="143" height="300">|
+|<img src="https://github.com/user-attachments/assets/0db8dd93-4fcf-4a99-bd18-77724970a0dc" width="143" height="300">|<img src="https://github.com/user-attachments/assets/f4915012-afd3-4652-a0a0-8dd33f2b5db4" width="143" height="300">|<img src="https://github.com/user-attachments/assets/70e0a126-7a92-4cfd-a9cf-a5d498850be4" width="143" height="300">|<img src="https://github.com/user-attachments/assets/0886856d-cc74-4dc6-b4b2-9ddedfc82e95" width="143" height="300">|
 
 
 |`지도에서 등록한 킥보드 마커로 표시`|`킥보드 대여하기 -> 대여중`|`킥보드 반납하기 -> 이용내역 확인`|`로그아웃, 회원탈퇴`|
